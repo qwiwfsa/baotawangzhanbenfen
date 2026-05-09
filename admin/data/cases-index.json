@@ -210,20 +210,5 @@
         "status": "published",
         "summary": "提供企业资金证明摆账服务",
         "lastModified": "2026-05-06 06:16:22"
-    },
-    {
-        "id": "119",
-        "title": "募集账户归还过桥-复制",
-        "type": "企业过桥",
-        "city": "某大型集团公司",
-        "amount": "8亿元",
-        "image": "uploads\/20260505_69f9c9606a777.jpg",
-        "coverImage": "uploads\/20260505_69f9c9606a777.jpg",
-        "images": [
-            "uploads\/20260505_69f9c9606a777.jpg"
-        ],
-        "status": "published",
-        "summary": "为上市公司提供募集资金账户归还过桥服务",
-        "lastModified": "2026-05-09 15:05:59"
     }
 ]
