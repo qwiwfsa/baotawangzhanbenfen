@@ -912,6 +912,153 @@
             margin-bottom: 12px;
         }
 
+        /* 批量操作工具栏 */
+        .batch-bar {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .batch-bar.show {
+            display: flex;
+        }
+
+        .batch-bar .selected-count {
+            font-size: 14px;
+            color: #4338ca;
+            font-weight: 500;
+        }
+
+        .batch-bar .btn-batch-delete {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .batch-bar .btn-batch-delete:hover {
+            background: #dc2626;
+        }
+
+        .batch-bar .btn-batch-category {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 8px;
+        }
+
+        .batch-bar .btn-batch-category:hover {
+            background: #2563eb;
+        }
+
+        .batch-bar .btn-batch-cancel {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            color: #6b7280;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .batch-bar .btn-batch-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        /* 案例卡片复选框 */
+        .case-card {
+            position: relative;
+        }
+
+        .case-card .card-checkbox {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+            width: 20px;
+            height: 20px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .case-card:hover .card-checkbox {
+            opacity: 1;
+        }
+
+        .case-card .card-checkbox:checked {
+            opacity: 1;
+        }
+
+        .case-card.selected {
+            outline: 2px solid #3b82f6;
+            outline-offset: -2px;
+            background: #f0f9ff;
+            border-radius: 12px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 确认删除弹窗 */
+        .confirm-modal .modal-container {
+            max-width: 420px;
+        }
+
+        .confirm-modal .modal-body {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .confirm-modal .confirm-icon {
+            font-size: 48px;
+            color: #ef4444;
+            margin-bottom: 16px;
+        }
+
+        .confirm-modal .confirm-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .confirm-modal .confirm-text {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
         /* 响应式 */
         @media (max-width: 1800px) {
             .cases-grid {
@@ -1096,6 +1243,24 @@
                     </div>
                 </div>
 
+                <!-- 批量操作栏 -->
+                <div class="batch-bar" id="batchBar">
+                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;margin-right:12px;">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)" style="width:18px;height:18px;accent-color:#3b82f6;cursor:pointer;">
+                        <span>全选</span>
+                    </label>
+                    <span class="selected-count">已选择 <strong id="selectedCount">0</strong> 个案例</span>
+                    <button class="btn-batch-category" onclick="openBatchCategoryModal()">
+                        <i class="fas fa-folder-open"></i> 批量修改分类
+                    </button>
+                    <button class="btn-batch-delete" onclick="batchDelete()">
+                        <i class="fas fa-trash-alt"></i> 批量删除
+                    </button>
+                    <button class="btn-batch-cancel" onclick="clearSelection()">
+                        <i class="fas fa-times"></i> 取消选择
+                    </button>
+                </div>
+
                 <!-- 案例列表 -->
                 <div class="cases-grid" id="casesGrid">
                     <!-- 案例卡片将在这里显示 -->
@@ -1125,6 +1290,30 @@
     <div class="toast" id="toast">
         <i class="fas fa-check-circle toast-icon"></i>
         <span class="toast-message">操作成功</span>
+    </div>
+
+    <!-- 批量修改分类弹窗 -->
+    <div class="modal-overlay" id="batchCategoryModal" onclick="if(event.target===this)closeBatchCategoryModal()">
+        <div class="modal-container" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-folder-open"></i> 批量修改分类
+                </h3>
+                <button class="modal-close" onclick="closeBatchCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px;">请选择要修改的业务类型：</p>
+                <select id="batchCategorySelect" class="filter-select" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    <option value="">请选择分类</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBatchCategoryModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmBatchCategory()">确认修改</button>
+            </div>
+        </div>
     </div>
 
     <!-- 业务类型管理弹窗 -->
@@ -1187,6 +1376,25 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeTypeForm()">取消</button>
                 <button class="btn btn-primary" onclick="saveType()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认删除弹窗 -->
+    <div class="modal-overlay confirm-modal" id="confirmModal" onclick="if(event.target===this)closeConfirmModal()">
+        <div class="modal-container">
+            <div class="modal-body">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="confirm-title" id="confirmTitle">确认删除</div>
+                <div class="confirm-text" id="confirmText">确定要删除选中的案例吗？此操作不可恢复。</div>
+            </div>
+            <div class="modal-footer" style="justify-content: center; gap: 12px;">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button class="btn" id="confirmDeleteBtn" style="background: #ef4444; color: white;" onclick="executeBatchDelete()">
+                    <i class="fas fa-trash-alt"></i> 确认删除
+                </button>
             </div>
         </div>
     </div>
@@ -1386,7 +1594,8 @@
                 }
 
                 return `
-                    <div class="case-card">
+                    <div class="case-card" data-id="${caseItem.id}">
+                        <input type="checkbox" class="card-checkbox" value="${caseItem.id}" onchange="onCaseCheckChange()">
                         <div class="case-card-image ${hasImage ? '' : 'empty'}">
                             ${hasImage
                                 ? `<img src="${imageUrl}" alt="${caseItem.title}" onerror="this.parentElement.classList.add('empty'); this.parentElement.innerHTML='<i class=\\'fas fa-image\\'></i>';">`
@@ -2085,6 +2294,256 @@
             } finally {
                 hideLoading();
             }
+        }
+
+        // ========== 批量删除功能 ==========
+
+        // 获取所有选中的案例ID
+        function getSelectedCaseIds() {
+            const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // 复选框状态变化
+        function onCaseCheckChange() {
+            const selectedIds = getSelectedCaseIds();
+            const batchBar = document.getElementById('batchBar');
+            const selectedCount = document.getElementById('selectedCount');
+            const selectAll = document.getElementById('selectAll');
+            const totalCount = document.querySelectorAll('.card-checkbox').length;
+
+            selectedCount.textContent = selectedIds.length;
+
+            if (selectedIds.length > 0) {
+                batchBar.classList.add('show');
+            } else {
+                batchBar.classList.remove('show');
+            }
+
+            // 更新全选复选框状态
+            if (selectAll) {
+                selectAll.checked = totalCount > 0 && selectedIds.length === totalCount;
+                selectAll.indeterminate = selectedIds.length > 0 && selectedIds.length < totalCount;
+            }
+
+            // 高亮选中的卡片
+            document.querySelectorAll('.case-card').forEach(card => {
+                const cb = card.querySelector('.card-checkbox');
+                if (cb && cb.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        // 清除所有选择
+        function clearSelection() {
+            document.querySelectorAll('.card-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            document.querySelectorAll('.case-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.getElementById('batchBar').classList.remove('show');
+        }
+
+        // 打开确认弹窗
+        function batchDelete() {
+            const selectedIds = getSelectedCaseIds();
+            if (selectedIds.length === 0) {
+                showToast('请先选择要删除的案例', 'warning');
+                return;
+            }
+
+            document.getElementById('confirmTitle').textContent = `确认删除 ${selectedIds.length} 个案例`;
+            document.getElementById('confirmText').textContent = `确定要删除选中的 ${selectedIds.length} 个案例吗？此操作不可恢复。`;
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // 关闭确认弹窗
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        // 执行批量删除
+        async function executeBatchDelete() {
+            const selectedIds = getSelectedCaseIds();
+            if (selectedIds.length === 0) {
+                closeConfirmModal();
+                return;
+            }
+
+            closeConfirmModal();
+            showLoading('正在批量删除...');
+
+            let successCount = 0;
+            let failCount = 0;
+
+            // 逐个删除（API接受单个ID）
+            for (const caseId of selectedIds) {
+                try {
+                    const deleted = await deleteCaseFromAPI(caseId);
+                    if (deleted) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (e) {
+                    console.error('批量删除失败:', caseId, e);
+                    failCount++;
+                }
+            }
+
+            hideLoading();
+
+            if (failCount === 0) {
+                showToast(`成功删除 ${successCount} 个案例`);
+            } else if (successCount > 0) {
+                showToast(`删除完成: ${successCount} 成功, ${failCount} 失败`, 'warning');
+            } else {
+                showToast('删除失败,请检查网络连接', 'error');
+            }
+
+            clearSelection();
+            await loadCases();
+        }
+
+        // 打开批量修改分类弹窗
+        function openBatchCategoryModal() {
+            const selectedIds = getSelectedCaseIds();
+            if (selectedIds.length === 0) {
+                showToast('请先选择要修改分类的案例', 'error');
+                return;
+            }
+            // 加载业务类型列表
+            loadCategoryOptions();
+            document.getElementById('batchCategoryModal').classList.add('show');
+        }
+
+        // 关闭批量修改分类弹窗
+        function closeBatchCategoryModal() {
+            document.getElementById('batchCategoryModal').classList.remove('show');
+        }
+
+        // 加载分类选项
+        async function loadCategoryOptions() {
+            try {
+                const response = await fetch('api/case-types.php');
+                const result = await response.json();
+                const select = document.getElementById('batchCategorySelect');
+                select.innerHTML = '<option value="">请选择分类</option>';
+                if (result.success && result.data) {
+                    result.data.forEach(type => {
+                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
+                    });
+                } else if (result.types) {
+                    result.types.forEach(type => {
+                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('加载分类失败:', error);
+            }
+        }
+
+        // 确认批量修改分类
+        async function confirmBatchCategory() {
+            const selectedIds = getSelectedCaseIds();
+            const categoryId = document.getElementById('batchCategorySelect').value;
+            
+            if (selectedIds.length === 0) {
+                showToast('请先选择要修改分类的案例', 'error');
+                closeBatchCategoryModal();
+                return;
+            }
+            
+            if (!categoryId) {
+                showToast('请选择要修改的分类', 'error');
+                return;
+            }
+
+            closeBatchCategoryModal();
+            showLoading('正在批量修改分类...');
+
+            let successCount = 0;
+            let failCount = 0;
+
+            // 逐个修改分类
+            for (const caseId of selectedIds) {
+                try {
+                    const response = await fetch('api/case/save.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: caseId,
+                            type_id: categoryId
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (e) {
+                    console.error('批量修改分类失败:', caseId, e);
+                    failCount++;
+                }
+            }
+
+            hideLoading();
+
+            if (failCount === 0) {
+                showToast(`成功修改 ${successCount} 个案例的分类`);
+            } else if (successCount > 0) {
+                showToast(`修改完成: ${successCount} 成功, ${failCount} 失败`, 'warning');
+            } else {
+                showToast('修改失败,请检查网络连接', 'error');
+            }
+
+            clearSelection();
+            await loadCases();
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll(checked) {
+            document.querySelectorAll('.card-checkbox').forEach(cb => {
+                cb.checked = checked;
+            });
+            updateBatchBar();
+        }
+
+        // 更新批量操作栏状态
+        function updateBatchBar() {
+            const selectedCount = document.querySelectorAll('.card-checkbox:checked').length;
+            const totalCount = document.querySelectorAll('.card-checkbox').length;
+            const batchBar = document.getElementById('batchBar');
+            const selectAll = document.getElementById('selectAll');
+            
+            document.getElementById('selectedCount').textContent = selectedCount;
+            
+            if (selectedCount > 0) {
+                batchBar.classList.add('show');
+            } else {
+                batchBar.classList.remove('show');
+            }
+            
+            // 更新全选复选框状态
+            if (selectAll) {
+                selectAll.checked = totalCount > 0 && selectedCount === totalCount;
+                selectAll.indeterminate = selectedCount > 0 && selectedCount < totalCount;
+            }
+            
+            // 高亮选中的卡片
+            document.querySelectorAll('.case-card').forEach(card => {
+                const checkbox = card.querySelector('.card-checkbox');
+                if (checkbox && checkbox.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
         }
     </script>
 </body>

@@ -228,7 +228,7 @@ if ('caches' in window) {
             let categoryLabels = {};
             const categoryIcons = {'liangzi':'fa-lightbulb','guoqiao':'fa-exchange-alt','baizhang':'fa-university','receivable':'fa-file-invoice-dollar','deposit':'fa-landmark','general':'fa-info-circle'};
 
-            try {
+            
                                 if (typeof FAQ_API_DATA !== 'undefined' && FAQ_API_DATA) {
                     var apiData = FAQ_API_DATA;
                     if (apiData && apiData.data && apiData.data.length > 0) faqs = apiData.data;
@@ -254,9 +254,6 @@ if ('caches' in window) {
                             cats[c2].style.display = (this.dataset.category === 'all' || cats[c2].dataset.category === this.dataset.category) ? 'block' : 'none';
                         }
                     });
-                }
-            }
-                    }
                 }
             }
         });

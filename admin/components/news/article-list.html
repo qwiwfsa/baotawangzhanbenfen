@@ -43,7 +43,26 @@
         .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; }
         .filter-select { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; min-width: 120px; }
         
-        /* 文章列表 */
+        /* 批量操作工具栏 */
+        .batch-bar { display: none; align-items: center; gap: 16px; padding: 12px 16px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; margin-bottom: 16px; }
+        .batch-bar.show { display: flex; }
+        .batch-bar .selected-count { font-size: 14px; color: #4338ca; font-weight: 500; }
+        .batch-bar .btn-batch-delete { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .batch-bar .btn-batch-delete:hover { background: #dc2626; }
+        .batch-bar .btn-batch-category { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; margin-left: auto; }
+        .batch-bar .btn-batch-category:hover { background: #2563eb; }
+        .batch-delete-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .batch-delete-btn:hover { background: #fee2e2; border-color: #fca5a5; }
+        .batch-delete-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* 文章卡片复选框 */
+        .article-card { position: relative; }
+        .article-card .card-checkbox { position: absolute; top: 8px; left: 8px; z-index: 10; width: 20px; height: 20px; accent-color: #3b82f6; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        .article-card:hover .card-checkbox { opacity: 1; }
+        .article-card .card-checkbox:checked { opacity: 1; }
+        .article-card.selected { outline: 2px solid #3b82f6; outline-offset: -2px; background: #f0f9ff; }
+        
+        /* 文章网格 */
         .article-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
         .article-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: all 0.2s; }
         .article-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
@@ -187,6 +206,21 @@
                     </select>
                 </div>
 
+                <!-- 批量操作工具栏 -->
+                <div class="batch-bar" id="batchBar">
+                    <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)" style="width:18px;height:18px;accent-color:#3b82f6;cursor:pointer;">
+                        <span>全选</span>
+                    </label>
+                    <span class="selected-count" id="selectedCount">已选择 0 篇</span>
+                    <button class="btn-batch-category" onclick="openBatchCategoryModal()" id="batchCategoryBtn" disabled>
+                        <i class="fas fa-folder-open"></i> 批量修改分类
+                    </button>
+                    <button class="btn-batch-delete" onclick="openBatchDeleteModal()" id="batchDeleteBtn" disabled>
+                        <i class="fas fa-trash-alt"></i> 批量删除
+                    </button>
+                </div>
+
                 <div id="articleList">
                     <div class="loading"><i class="fas fa-spinner"></i></div>
                 </div>
@@ -196,7 +230,7 @@
         </main>
     </div>
 
-    <!-- 删除确认模态框 -->
+    <!-- 删除确认模态框（单篇） -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal">
             <div class="modal-header">
@@ -206,11 +240,52 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>确定要删除这篇文章吗？删除后无法恢复。</p>
+                <p id="deleteModalMessage">确定要删除这篇文章吗？删除后无法恢复。</p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
                 <button class="btn btn-primary" onclick="confirmDelete()" style="background: #ef4444;">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量删除确认模态框 -->
+    <div class="modal-overlay" id="batchDeleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">批量删除确认</h3>
+                <button class="modal-close" onclick="closeBatchDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="batchDeleteModalMessage">确定要删除选中的文章吗？删除后无法恢复。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBatchDeleteModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmBatchDelete()" style="background: #ef4444;">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量修改分类模态框 -->
+    <div class="modal-overlay" id="batchCategoryModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">批量修改分类</h3>
+                <button class="modal-close" onclick="closeBatchCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 16px;">请选择要修改的分类：</p>
+                <select id="batchCategorySelect" class="filter-select" style="width: 100%;">
+                    <option value="">请选择分类</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBatchCategoryModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmBatchCategory()">确认修改</button>
             </div>
         </div>
     </div>
@@ -460,7 +535,8 @@
             };
             container.innerHTML = `<div class="article-grid">
                 ${articles.map(article => `
-                    <div class="article-card">
+                    <div class="article-card" data-id="${article.id}">
+                        <input type="checkbox" class="card-checkbox" value="${article.id}" onchange="updateBatchBar()">
                         <img src="${getCoverSrc(article.cover_image) || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22100%22%3E%3Crect fill=%22%23f3f4f6%22 width=%22200%22 height=%22100%22/%3E%3Ctext fill=%22%239ca3af%22 font-size=%2212%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E%E6%9A%82%E6%97%A0%E5%B0%81%E9%9D%A2%3C/text%3E%3C/svg%3E'}" alt="${article.title}" class="article-image" onerror="this.style.display='none'">
                         <div class="article-content">
                             <h3 class="article-title">${article.title}</h3>
@@ -541,6 +617,7 @@
         function deleteArticle(id) {
             console.log('删除文章，ID:', id);
             currentArticleId = id;
+            document.getElementById('deleteModalMessage').textContent = '确定要删除这篇文章吗？删除后无法恢复。';
             document.getElementById('deleteModal').classList.add('show');
         }
 
@@ -595,6 +672,127 @@
             }
         }
 
+        // ========== 批量删除功能 ==========
+
+        // 获取所有已选中的文章ID
+        function getSelectedIds() {
+            const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // 更新批量操作栏状态
+        function updateBatchBar() {
+            const selectedIds = getSelectedIds();
+            const count = selectedIds.length;
+            const batchBar = document.getElementById('batchBar');
+            const selectedCount = document.getElementById('selectedCount');
+            const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+            const batchCategoryBtn = document.getElementById('batchCategoryBtn');
+
+            // 更新已选数量
+            selectedCount.textContent = `已选择 ${count} 篇`;
+
+            // 切换批量栏显示
+            if (count > 0) {
+                batchBar.classList.add('show');
+                if (batchDeleteBtn) batchDeleteBtn.disabled = false;
+                if (batchCategoryBtn) batchCategoryBtn.disabled = false;
+            } else {
+                batchBar.classList.remove('show');
+                if (batchDeleteBtn) batchDeleteBtn.disabled = true;
+                if (batchCategoryBtn) batchCategoryBtn.disabled = true;
+            }
+
+            // 高亮选中的卡片
+            document.querySelectorAll('.article-card').forEach(card => {
+                const checkbox = card.querySelector('.card-checkbox');
+                if (checkbox && checkbox.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+
+            // 更新全选复选框状态
+            const allCheckboxes = document.querySelectorAll('.card-checkbox');
+            const selectAll = document.getElementById('selectAll');
+            if (selectAll) {
+                const checkedCount = document.querySelectorAll('.card-checkbox:checked').length;
+                selectAll.checked = allCheckboxes.length > 0 && checkedCount === allCheckboxes.length;
+                selectAll.indeterminate = checkedCount > 0 && checkedCount < allCheckboxes.length;
+            }
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll(checked) {
+            document.querySelectorAll('.card-checkbox').forEach(cb => {
+                cb.checked = checked;
+            });
+            updateBatchBar();
+        }
+
+        // 打开批量删除确认对话框
+        function openBatchDeleteModal() {
+            const selectedIds = getSelectedIds();
+            if (selectedIds.length === 0) {
+                showToast('请先选择要删除的文章', 'error');
+                return;
+            }
+            document.getElementById('batchDeleteModalMessage').textContent = `确定要删除选中的 ${selectedIds.length} 篇文章吗？此操作不可撤销。`;
+            document.getElementById('batchDeleteModal').classList.add('show');
+        }
+
+        // 关闭批量删除确认对话框
+        function closeBatchDeleteModal() {
+            document.getElementById('batchDeleteModal').classList.remove('show');
+        }
+
+        // 确认批量删除
+        async function confirmBatchDelete() {
+            const selectedIds = getSelectedIds();
+            if (selectedIds.length === 0) {
+                showToast('请先选择要删除的文章', 'error');
+                closeBatchDeleteModal();
+                return;
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const response = await fetch('../../api/news/delete.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: selectedIds.map(id => parseInt(id)) }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(`成功删除 ${selectedIds.length} 篇文章`, 'success');
+                    closeBatchDeleteModal();
+                    // 取消全选
+                    const selectAll = document.getElementById('selectAll');
+                    if (selectAll) selectAll.checked = false;
+                    // 重新加载列表
+                    loadArticles();
+                } else {
+                    showToast(result.message || '批量删除失败', 'error');
+                    closeBatchDeleteModal();
+                }
+            } catch (error) {
+                console.error('API批量删除失败:', error);
+                let errorMsg = '批量删除失败: ' + (error.message || '网络错误');
+                if (error.name === 'AbortError') {
+                    errorMsg = '删除超时，请检查服务器是否正常运行';
+                }
+                showToast(errorMsg, 'error');
+                closeBatchDeleteModal();
+            }
+        }
+
         // 显示提示
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -607,6 +805,113 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        // 打开批量修改分类对话框
+        function openBatchCategoryModal() {
+            const selectedIds = getSelectedIds();
+            if (selectedIds.length === 0) {
+                showToast('请先选择要修改分类的文章', 'error');
+                return;
+            }
+            // 加载分类列表
+            loadCategoryOptions();
+            document.getElementById('batchCategoryModal').classList.add('show');
+        }
+
+        // 关闭批量修改分类对话框
+        function closeBatchCategoryModal() {
+            document.getElementById('batchCategoryModal').classList.remove('show');
+        }
+
+        // 加载分类选项
+        async function loadCategoryOptions() {
+            try {
+                console.log('[DEBUG] 开始加载分类列表...');
+                const response = await fetch('../../api/categories.php');
+                console.log('[DEBUG] API响应状态:', response.status);
+                const result = await response.json();
+                console.log('[DEBUG] API返回数据:', result);
+                
+                const select = document.getElementById('batchCategorySelect');
+                select.innerHTML = '<option value="">请选择分类</option>';
+                
+                let categories = [];
+                if (result.success && result.data) {
+                    categories = result.data;
+                } else if (result.categories) {
+                    categories = result.categories;
+                }
+                
+                console.log('[DEBUG] 找到分类数量:', categories.length);
+                
+                categories.forEach(cat => {
+                    console.log('[DEBUG] 添加分类:', cat.id, cat.name);
+                    select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+                
+                console.log('[DEBUG] 分类列表加载完成');
+            } catch (error) {
+                console.error('[ERROR] 加载分类失败:', error);
+                alert('加载分类列表失败: ' + error.message);
+            }
+        }
+
+        // 确认批量修改分类
+        async function confirmBatchCategory() {
+            const selectedIds = getSelectedIds();
+            const categoryId = document.getElementById('batchCategorySelect').value;
+            
+            if (selectedIds.length === 0) {
+                showToast('请先选择要修改分类的文章', 'error');
+                closeBatchCategoryModal();
+                return;
+            }
+            
+            if (!categoryId) {
+                showToast('请选择要修改的分类', 'error');
+                return;
+            }
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const response = await fetch('../../api/news/update-category.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        ids: selectedIds.map(id => parseInt(id)),
+                        category_id: parseInt(categoryId)
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(`成功修改 ${selectedIds.length} 篇文章的分类`, 'success');
+                    closeBatchCategoryModal();
+                    // 取消全选
+                    const selectAll = document.getElementById('selectAll');
+                    if (selectAll) selectAll.checked = false;
+                    updateBatchBar();
+                    // 重新加载列表
+                    loadArticles();
+                } else {
+                    showToast(result.message || '批量修改分类失败', 'error');
+                    closeBatchCategoryModal();
+                }
+            } catch (error) {
+                console.error('API批量修改分类失败:', error);
+                let errorMsg = '批量修改分类失败: ' + (error.message || '网络错误');
+                if (error.name === 'AbortError') {
+                    errorMsg = '请求超时，请检查服务器是否正常运行';
+                }
+                showToast(errorMsg, 'error');
+                closeBatchCategoryModal();
+            }
         }
     </script>
 </body>
