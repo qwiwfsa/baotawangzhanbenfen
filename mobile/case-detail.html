@@ -10,6 +10,35 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/case-detail.css">
+    <script>
+        // 全局函数：检测相关案例图片比例
+        window.detectRelatedImageRatio = function(imgElement, container) {
+            if (!imgElement || !container) return;
+            
+            const checkRatio = () => {
+                const width = imgElement.naturalWidth || imgElement.width;
+                const height = imgElement.naturalHeight || imgElement.height;
+                
+                if (width && height) {
+                    const ratio = width / height;
+                    if (ratio >= 1.2) {
+                        container.classList.remove('ratio-portrait');
+                        container.classList.add('ratio-landscape');
+                    } else {
+                        container.classList.remove('ratio-landscape');
+                        container.classList.add('ratio-portrait');
+                    }
+                }
+            };
+            
+            if (imgElement.complete) {
+                checkRatio();
+            } else {
+                imgElement.onload = checkRatio;
+                imgElement.onerror = () => {};
+            }
+        };
+    </script>
     <style>
 
         /* 页面布局 - 页脚固定到底部 */
@@ -594,7 +623,7 @@
         // 从服务器加载所有案例
         async function loadAllCasesFromServer() {
             try {
-                const response = await fetch(basePath + '../admin/api/cases.php');
+                const response = await fetch(basePath + '../api/cases.php');
                 const result = await response.json();
                 if (result.success && result.cases) {
                     return result.cases.filter(c => c.status === 'published');
