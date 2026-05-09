@@ -564,12 +564,11 @@
     </main>
 
     <!-- 页脚 -->
-    <footer class="footer">
+    <footer class="footer" id="footer">
         <div class="footer-container">
-            
             <div class="footer-bottom">
-                <p class="footer-copyright">&copy; 2024 Yao资金网 版权所有</p>
-                <p class="footer-disclaimer">投资有风险，入市需谨慎。本网站内容仅供参考，不构成投资建议。</p>
+                <p class="footer-copyright" id="footerCopyright">&copy; 2024 Yao资金网 版权所有</p>
+                <p class="footer-disclaimer" id="footerDisclaimer">投资有风险，入市需谨慎。本网站内容仅供参考，不构成投资建议。</p>
             </div>
         </div>
     </footer>
@@ -774,7 +773,40 @@
                     console.error('API load failed:', e);
                     renderNotFound();
                 });
-        });</script>
+        });
+        
+        // 从API加载页脚数据
+        (function(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '../admin/api/footer-data.php?t=' + Date.now(), true);
+            xhr.onload = function(){
+                if(xhr.status >= 200 && xhr.status < 400){
+                    try{
+                        var resp = JSON.parse(xhr.responseText);
+                        if(resp.code === 0 && resp.data && resp.grouped){
+                            var bottom = resp.grouped['bottom'] || [];
+                            var copyright = '', disclaimer = '';
+                            for(var i = 0; i < bottom.length; i++){
+                                if(bottom[i].item_key === 'copyright_text'){
+                                    copyright = bottom[i].item_value || '';
+                                } else if(bottom[i].item_key === 'disclaimer_text'){
+                                    disclaimer = bottom[i].item_value || '';
+                                }
+                            }
+                            if(copyright){
+                                var el = document.getElementById('footerCopyright');
+                                if(el) el.innerHTML = copyright;
+                            }
+                            if(disclaimer){
+                                var el = document.getElementById('footerDisclaimer');
+                                if(el) el.innerHTML = disclaimer;
+                            }
+                        }
+                    }catch(e){}
+                }
+            };
+            xhr.send();
+        })();</script>
     <script src="../admin/assets/cms.js"></script>
 </body>
 </html>

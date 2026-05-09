@@ -1030,8 +1030,8 @@
 
 
 
-                <p class="footer-copyright">© 2024 Yao资金网 宏都资本版权所有</p>
-                <p class="footer-disclaimer">粤ICP备2026052915号</p>
+                <p class="footer-copyright" id="footerCopyright">© 2024 Yao资金网 宏都资本版权所有</p>
+                <p class="footer-disclaimer" id="footerDisclaimer">粤ICP备2026052915号</p>
 
 
 
@@ -1136,4 +1136,40 @@
 
     loadNews();
 })();</script>
+
+<script>
+// 从API同步页脚数据
+(function(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '../admin/api/footer-data.php?t=' + Date.now(), true);
+    xhr.onload = function(){
+        if(xhr.status >= 200 && xhr.status < 400){
+            try{
+                var resp = JSON.parse(xhr.responseText);
+                if(resp.code === 0 && resp.data && resp.grouped){
+                    var bottom = resp.grouped['bottom'] || [];
+                    var copyright = '', disclaimer = '';
+                    for(var i = 0; i < bottom.length; i++){
+                        if(bottom[i].item_key === 'copyright_text'){
+                            copyright = bottom[i].item_value || '';
+                        } else if(bottom[i].item_key === 'disclaimer_text'){
+                            disclaimer = bottom[i].item_value || '';
+                        }
+                    }
+                    if(copyright){
+                        var el = document.getElementById('footerCopyright');
+                        if(el) el.innerHTML = copyright;
+                    }
+                    if(disclaimer){
+                        var el = document.getElementById('footerDisclaimer');
+                        if(el) el.innerHTML = disclaimer;
+                    }
+                }
+            }catch(e){}
+        }
+    };
+    xhr.send();
+})();
+</script>
+
 </body></html>
