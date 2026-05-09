@@ -414,7 +414,7 @@
 
             <div class="cases-showcase-grid" id="casesShowcaseGrid">
                     <article class="case-card-enhanced" data-id="case_1777296851044">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe569f351a.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe569f351a.jpg')">
                             <img src="../uploads/20260428_69efe569f351a.jpg" alt="某房地产企业" onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -432,7 +432,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777298570787">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260427_69efb18e8687a.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260427_69efb18e8687a.jpg')">
                             <img src="../uploads/20260427_69efb18e8687a.jpg" alt="现金亮资" onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -450,7 +450,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777296618774">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe591a8ada.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe591a8ada.jpg')">
                             <img src="../uploads/20260428_69efe591a8ada.jpg" alt="某大型集团公? onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -469,7 +469,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777298492653">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe75776f9a.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe75776f9a.jpg')">
                             <img src="../uploads/20260428_69efe75776f9a.jpg" alt="某上市制造企? onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -488,7 +488,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_test_001">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260427_69efbc447d775.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260427_69efbc447d775.jpg')">
                             <img src="../uploads/20260427_69efbc447d775.jpg" alt="某上市公司过桥融? onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -507,7 +507,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777327823526">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5a609ecf.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5a609ecf.jpg')">
                             <img src="../uploads/20260428_69efe5a609ecf.jpg" alt="某酒店老板" onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -525,7 +525,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777297531614">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5568ea59.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5568ea59.jpg')">
                             <img src="../uploads/20260428_69efe5568ea59.jpg" alt="某连锁零售企? onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -544,7 +544,7 @@
                     </article>
 
                     <article class="case-card-enhanced" data-id="case_1777296718376">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5303e212.jpg')">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5303e212.jpg')">
                             <img src="../uploads/20260428_69efe5303e212.jpg" alt="某物流科技企业" onerror="this.src='../images/case-default.svg'" class="">
                         </div>
                         <div class="case-card-content">
@@ -875,20 +875,20 @@
 
                 grid.innerHTML = pageData.map(item => `
                     <article class="case-card-enhanced" data-id="${item.id}">
-                        <div class="case-card-image" onclick="openLightbox('${item.cover_image}')">
+                        <div class="case-card-image" onclick="window.openLightbox && window.openLightbox('${item.cover_image}')">
                             <img src="${item.cover_image}"
                                  alt="${item.title}"
                                  onerror="this.src='../images/case-default.svg'">
                         </div>
-                        <div class="case-card-content">
-                            <h3 class="case-card-title">${item.title}</h3>
+                        <div class="case-card-content" onclick="window.location.href='case-detail.html?id=${item.id}'" style="cursor:pointer">
+                            <h3 class="case-card-title" style="cursor:pointer">${item.title}</h3>
                             <p class="case-card-summary">${item.summary}</p>
                             <div class="case-card-meta">
                                 <div class="case-card-amount">
                                     <span class="case-card-amount-label">出资金额</span>
                                     <span class="case-card-amount-value">${item.amount}</span>
                                 </div>
-                                <button class="btn-view-detail" style="pointer-events: none; opacity: 0.6; cursor: default;">查看详情</button>
+                                <button class="btn-view-detail" onclick="event.stopPropagation();window.location.href='case-detail.html?id=${item.id}'">查看详情</button>
                             </div>
                         </div>
                     </article>

@@ -1,4 +1,4 @@
-﻿<html lang="zh-CN"><head>
+<html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="展示多行业资金业务成功案例，包含企业摆账、过桥短拆、银行冲量、实缴验资、工程亮资等场景参考。">
@@ -6,8 +6,27 @@
     <title>资金业务成功案例 | 企业摆账 - 过桥短拆真实案例</title>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/cases-enhanced.css">
+    <link rel="stylesheet" href="../css/style.css?v=202605092100">
+    <link rel="stylesheet" href="../css/cases-enhanced.css?v=202605092100">
+    <!-- Lightbox函数定义 - 放在head确保全局可用 -->
+    <script>
+        window.openLightbox = function(imageSrc) {
+            var lightbox = document.getElementById('imageLightbox');
+            var lightboxImage = document.getElementById('lightboxImage');
+            if (lightbox && lightboxImage) {
+                lightboxImage.src = imageSrc;
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        };
+        window.closeLightbox = function() {
+            var lightbox = document.getElementById('imageLightbox');
+            if (lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        };
+    </script>
     <!-- Logo动态加载 -->
     <script>
     (function(){
@@ -197,7 +216,7 @@
                 <!-- 案例卡片网格 -->
                 <div class="cases-grid-enhanced" id="casesGrid">
                     <article class="case-card-enhanced" data-id="case_1777296851044">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe569f351a.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe569f351a.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe569f351a.jpg" alt="某房地产企业" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -218,7 +237,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777298570787">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260427_69efb18e8687a.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260427_69efb18e8687a.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260427_69efb18e8687a.jpg" alt="现金亮资" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -239,7 +258,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777296618774">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe591a8ada.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe591a8ada.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe591a8ada.jpg" alt="某大型集团公司" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -260,7 +279,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777298492653">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe75776f9a.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe75776f9a.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe75776f9a.jpg" alt="某上市制造企业" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -281,7 +300,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_test_001">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260427_69efbc447d775.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260427_69efbc447d775.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260427_69efbc447d775.jpg" alt="某上市公司过桥融资" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -302,7 +321,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777327823526">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5a609ecf.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5a609ecf.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe5a609ecf.jpg" alt="某酒店老板" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -323,7 +342,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777297531614">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5568ea59.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5568ea59.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe5568ea59.jpg" alt="某连锁零售企业" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -344,7 +363,7 @@
                     </article>
                 
                     <article class="case-card-enhanced" data-id="case_1777296718376">
-                        <div class="case-card-image" onclick="openLightbox('/uploads/20260428_69efe5303e212.jpg')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('/uploads/20260428_69efe5303e212.jpg')" style="cursor: zoom-in;">
                             <img src="../uploads/20260428_69efe5303e212.jpg" alt="某物流科技企业" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -439,7 +458,7 @@
         }
 
         // 打开图片预览
-        function openLightbox(imageSrc) {
+        window.openLightbox = function(imageSrc) {
             const lightbox = document.getElementById('imageLightbox');
             const lightboxImage = document.getElementById('lightboxImage');
             lightboxImage.src = imageSrc;
@@ -448,7 +467,7 @@
         }
         
         // 关闭图片预览
-        function closeLightbox() {
+        window.closeLightbox = function() {
             const lightbox = document.getElementById('imageLightbox');
             lightbox.style.display = 'none';
             document.body.style.overflow = ''; // 恢复背景滚动
@@ -458,14 +477,14 @@
         document.addEventListener('click', function(e) {
             const lightbox = document.getElementById('imageLightbox');
             if (e.target === lightbox) {
-                closeLightbox();
+                window.closeLightbox();
             }
         });
         
         // ESC键关闭
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                closeLightbox();
+                window.closeLightbox();
             }
         });
 
@@ -567,7 +586,7 @@
                 const caseDetail = caseItem.summary || caseItem.detail || '暂无详情描述';
                 return `
                     <article class="case-card-enhanced" data-id="${caseItem.id}">
-                        <div class="case-card-image" onclick="openLightbox('${imagePath}')" style="cursor: zoom-in;">
+                        <div class="case-card-image" onclick="window.openLightbox('${imagePath}')" style="cursor: zoom-in;">
                             <img src="${imagePath}" alt="${caseItem.title}" loading="lazy">
                         </div>
                         <div class="case-card-content">
@@ -812,7 +831,7 @@
     <!-- 图片预览弹窗 (Lightbox) -->
     <div id="imageLightbox" class="lightbox-overlay" style="display: none;">
         <div class="lightbox-container">
-            <button class="lightbox-close" onclick="closeLightbox()" aria-label="关闭预览">
+            <button class="lightbox-close" onclick="window.closeLightbox()" aria-label="关闭预览">
                 <i class="fas fa-times"></i>
             </button>
             <img id="lightboxImage" src="" alt="大图预览">
