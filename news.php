@@ -263,22 +263,19 @@ DeviceDetector::redirect();
         async function loadNewsFromServer() {
             console.log('[News] 开始从服务器加载文章...');
             try {
+                const ts = Date.now();
                 const apiUrl = currentCategoryId
-                    ? 'mobile/api/news.php?category_id=' + currentCategoryId + '&limit=100&t=' + Date.now()
-                    : 'mobile/api/news.php?limit=100&t=' + Date.now();
+                    ? 'mobile/api/news.php?category_id=' + currentCategoryId + '&limit=100&t=' + ts
+                    : 'mobile/api/news.php?limit=100&t=' + ts;
                 const response = await fetch(apiUrl, {
                     method: 'GET',
                     cache: 'no-store',
-                    headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
+                    headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0' }
                 });
                 if (!response.ok) { return null; }
                 const result = await response.json();
                 if (result.success && result.data && result.data.news) {
                     console.log('[News] 从服务器加载了', result.data.news.length, '篇文章');
-                    // 同时更新localStorage中的分类
-                    if (result.data.categories && Array.isArray(result.data.categories)) {
-                        localStorage.setItem('cms_categories', JSON.stringify(result.data.categories));
-                    }
                     return result.data.news;
                 }
                 return null;
@@ -288,7 +285,30 @@ DeviceDetector::redirect();
             }
         }
 
-        // 从localStorage加载分类
+        // 从服务器API加载最新分类并按点击事件生成分类UI
+        async function loadCategoriesFromServer() {
+            console.log('[News] 从服务器加载分类...');
+            const categoriesContainer = document.getElementById('newsCategories');
+            if (!categoriesContainer) return;
+            
+            try {
+                const resp = await fetch('mobile/api/news.php?limit=1&t=' + Date.now(), {
+                    cache: 'no-store',
+                    headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' }
+                });
+                if (resp.ok) {
+                    const result = await resp.json();
+                    if (result.success && result.data && result.data.categories) {
+                        localStorage.setItem('cms_categories', JSON.stringify(result.data.categories));
+                        console.log('[News] 服务器分类已更新, 共', result.data.categories.length, '个');
+                    }
+                }
+            } catch (e) {
+                console.warn('[News] 从服务器加载分类失败，使用本地缓存:', e);
+            }
+        }
+        
+        // 从localStorage加载分类到UI（每次点击先调用loadCategoriesFromServer，再调用此函数）
         function loadCategories() {
             console.log('[News] 开始加载分类...');
             
@@ -301,30 +321,37 @@ DeviceDetector::redirect();
                 return;
             }
             
-            // 保留"全部资讯"，移除其他分类
-            const allLink = categoriesContainer.querySelector('[data-cat-id="0"]');
+            // 保存当前选中的分类ID
+            const prevSelected = currentCategoryId;
+            
+            // 重建容器 - 保留"全部资讯"
             categoriesContainer.innerHTML = '';
-            if (allLink) {
-                allLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    currentCategoryId = 0;
-                    updateActiveCategory();
-                    loadNewsByCategory();
-                });
-                categoriesContainer.appendChild(allLink);
-            }
+            
+            // "全部资讯"链接
+            const allLink = document.createElement('a');
+            allLink.href = '#';
+            allLink.className = 'news-category' + (prevSelected === 0 ? ' active' : '');
+            allLink.textContent = '全部资讯';
+            allLink.dataset.catId = '0';
+            allLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentCategoryId = 0;
+                updateActiveCategory();
+                loadNewsByCategory();
+            });
+            categoriesContainer.appendChild(allLink);
             
             // 添加CMS分类
             if (categories.length > 0) {
                 categories.forEach(cat => {
                     const catLink = document.createElement('a');
                     catLink.href = '#';
-                    catLink.className = 'news-category';
+                    catLink.className = 'news-category' + (parseInt(cat.id) === prevSelected ? ' active' : '');
                     catLink.textContent = cat.name;
                     catLink.dataset.catId = cat.id;
                     catLink.addEventListener('click', function(e) {
                         e.preventDefault();
-                        currentCategoryId = cat.id;
+                        currentCategoryId = parseInt(cat.id);
                         updateActiveCategory();
                         loadNewsByCategory();
                     });
@@ -511,27 +538,35 @@ DeviceDetector::redirect();
         
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', async function() {
-
-            // 直接从API加载全部文章
+            // 先加载分类，再加载文章（确保分类最新后再加载文章）
+            await loadCategoriesFromServer();
+            loadCategories();
+            
+            // 再从API加载全部文章
             loadNewsFromServer().then(articles => {
                 if (articles && articles.length > 0) {
                     renderArticles(articles);
                     allNewsArticles = articles;
                 }
             });
-
-            loadCategories();
-
         });
 
-        // 分类点击直接重新加载
-        function loadNewsByCategory() {
+        // 分类点击：先更新分类数据，再加载文章（确保分类实时同步）
+        async function loadNewsByCategory() {
             loadNewsFromServer().then(articles => {
                 if (articles && articles.length > 0) {
                     renderArticles(articles);
                     allNewsArticles = articles;
                 }
             });
+        }
+        
+        // 分类点击时：服务器加载分类 → 更新UI → 加载文章（串行，无竞态）
+        async function loadCategoriesAndArticles() {
+            await loadCategoriesFromServer();
+            loadCategories();
+            updateActiveCategory();
+            loadNewsByCategory();
         }</script>
     
     <!-- CMS Editor -->
