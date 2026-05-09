@@ -449,6 +449,13 @@ DeviceDetector::redirect();
                 }catch(e){}
             }
         };
+        // 全局logo加载失败处理
+        document.addEventListener('error', function(e){
+            var t = e.target;
+            if(t.tagName==='IMG' && /logo/i.test(t.src)){
+                t.src='images/logo.png';
+            }
+        }, true);
         xhr.send();
     })();
     </script>
@@ -508,14 +515,31 @@ DeviceDetector::redirect();
 </script>
 
 <style>
-/* 文章详情页 - 页脚只保留版权和免责 */
+/* 文章详情页 - 使用flexbox让页脚固定在底部 */
+html, body {
+    height: 100%;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+main#main-content {
+    flex: 1 0 auto;
+}
+/* 页脚只保留版权和免责，确保固定在底部 */
 .footer .footer-main {
     display: none !important;
+}
+.footer {
+    padding-top: 0 !important;
+    flex-shrink: 0;
 }
 .footer .footer-container > .footer-bottom {
     display: block !important;
     border-top: none !important;
     padding-top: 30px !important;
+    padding-bottom: 20px !important;
     text-align: center !important;
 }
 </style>
@@ -530,7 +554,7 @@ DeviceDetector::redirect();
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar" role="navigation" aria-label="主导航">
         <div class="navbar-container">
-<a href="index.html" class="logo" aria-label="Yao资金网首页"><img src="uploads/logo.png?v=20260502040820" alt="Yao资金网" style="height:48px;width:auto;"></a>
+<a href="index.html" class="logo" aria-label="Yao资金网首页"><img src="uploads/logo/biaoqianlogo.png?v=20260502040820" alt="Yao资金网" style="height:48px;width:auto;"></a>
             <ul class="nav-menu" role="menubar">
                 <li role="none"><a href="index.html" class="nav-link" role="menuitem">首页</a></li>
                 <li role="none"><a href="services.html" class="nav-link" role="menuitem">业务范围</a></li>
