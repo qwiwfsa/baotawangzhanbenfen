@@ -678,12 +678,12 @@
                     const result = await response.json();
                     console.log('[首页案例] API返回:', result);
 
-                    if (result.success && result.data && result.data.cases && result.data.cases.length > 0) {
-                        // API返回的是 data.cases 字段
+                    if (result.success && result.cases && result.cases.length > 0) {
+                        // API返回的是 cases 字段
 
                         // 按ID去重,防止重复显示
                         const seenIds = new Set();
-                        const uniqueCases = result.data.cases.filter(c => {
+                        const uniqueCases = result.cases.filter(c => {
                             if (seenIds.has(c.id)) {
                                 console.log('[首页案例] 去重跳过重复案例:', c.id, c.title);
                                 return false;
