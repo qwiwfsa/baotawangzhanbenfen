@@ -123,7 +123,7 @@
 </script>
 <link rel="icon" href="./uploads/logo/logo_20260504_045101_69f80995372b0.png">
 <script>
-(function(){var ua=navigator.userAgent;if(/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone|webOS|Opera Mini|IEMobile/i.test(ua)&&window.location.pathname.indexOf("/mobile/")===-1){var p=window.location.pathname.split("/").pop();window.location.href="mobile/"+(p||"index.html");}})();
+(function(){var ua=navigator.userAgent;var isMobile=/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone|webOS|Opera Mini|IEMobile/i.test(ua);var isTablet=/iPad|Tablet|PlayBook|Silk|Kindle/i.test(ua)||(ua.indexOf('Android')>-1&&ua.indexOf('Mobile')===-1);if(isMobile&&!isTablet&&window.location.pathname.indexOf('/mobile/')===-1){var p=window.location.pathname.split('/').pop();window.location.href='mobile/'+(p||'index.html');}})();
 </script>
 </head>
 <body>

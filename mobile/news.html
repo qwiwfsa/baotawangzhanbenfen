@@ -118,7 +118,7 @@
 
 
                     if(resp.code===0&&resp.data){
-                        function fixSubDir(p){return p&&p.indexOf('http')!==0?'../'+(p.indexOf('/')===0?p.substring(1):p):p;}
+                        function fixSubDir(p){return p&&p.indexOf('http')!==0?'../'+(p.charAt(0)==='/'?p.substring(1):p):p;}
 
 
 
