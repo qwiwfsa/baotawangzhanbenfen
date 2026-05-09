@@ -844,3 +844,27 @@
 [2026-05-09 15:07:29] 解析后的数据: {"id":0,"title":"三十八","summary":"","content":"","category_id":0,"cover_image":"uploads\/20260509_69ff318fd72aa.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
 [2026-05-09 15:07:29] 数据库连接成功
 [2026-05-09 15:07:29] 文章保存成功, ID: 49
+[2026-05-09 18:19:58] === 文章保存API被调用 ===
+[2026-05-09 18:19:58] 请求方法: POST
+[2026-05-09 18:19:58] 请求URI: /hongdu/admin/api/news/save.php
+[2026-05-09 18:19:58] 原始请求数据长度: 222
+[2026-05-09 18:19:58] 原始请求数据: {"id":8,"title":"测试五","summary":"","content":"","category_id":0,"cover_image":"uploads/20260509_69ff5eac6513b.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:19:58] 解析后的数据: {"id":8,"title":"测试五","summary":"","content":"","category_id":0,"cover_image":"uploads\/20260509_69ff5eac6513b.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:19:58] 数据库连接成功
+[2026-05-09 18:19:58] 文章保存成功, ID: 8
+[2026-05-09 18:20:18] === 文章保存API被调用 ===
+[2026-05-09 18:20:18] 请求方法: POST
+[2026-05-09 18:20:18] 请求URI: /hongdu/admin/api/news/save.php
+[2026-05-09 18:20:18] 原始请求数据长度: 225
+[2026-05-09 18:20:18] 原始请求数据: {"id":0,"title":"测试十一","summary":"","content":"","category_id":0,"cover_image":"uploads/20260509_69ff5ec042d6a.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:20:18] 解析后的数据: {"id":0,"title":"测试十一","summary":"","content":"","category_id":0,"cover_image":"uploads\/20260509_69ff5ec042d6a.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:20:18] 数据库连接成功
+[2026-05-09 18:20:18] 文章保存成功, ID: 50
+[2026-05-09 18:20:37] === 文章保存API被调用 ===
+[2026-05-09 18:20:37] 请求方法: POST
+[2026-05-09 18:20:37] 请求URI: /hongdu/admin/api/news/save.php
+[2026-05-09 18:20:37] 原始请求数据长度: 238
+[2026-05-09 18:20:37] 原始请求数据: {"id":0,"title":"测试谁？","summary":"","content":"<p>测试</p>","category_id":0,"cover_image":"uploads/20260509_69ff5ecda7211.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:20:37] 解析后的数据: {"id":0,"title":"测试谁？","summary":"","content":"<p>测试<\/p>","category_id":0,"cover_image":"uploads\/20260509_69ff5ecda7211.jpg","status":"published","is_top":0,"sort_order":0,"seo_title":"","seo_keywords":"","seo_description":""}
+[2026-05-09 18:20:37] 数据库连接成功
+[2026-05-09 18:20:37] 文章保存成功, ID: 51

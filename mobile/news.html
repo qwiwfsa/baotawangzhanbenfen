@@ -862,7 +862,7 @@
 
 
 
-                    <div class="news-categories" id="newsCategories"><a href="#" class="news-category active" data-cat-id="0">全部资讯</a><a href="#" class="news-category" data-cat-id="5">企业摆账</a><a href="#" class="news-category" data-cat-id="1">过桥短拆</a><a href="#" class="news-category" data-cat-id="4">实缴验资</a><a href="#" class="news-category" data-cat-id="2">显账亮资</a><a href="#" class="news-category" data-cat-id="3">金融知识</a></div>
+                    <div class="news-categories" id="newsCategories"><a href="#" class="news-category active" data-cat-id="0">全部资讯</a></div>
 
 
 
@@ -1070,7 +1070,7 @@
     <script src="../js/main.js"></script>
 <script>
 (async function(){
-    var STATE = {all:[], page:1, per:10, loading:false};
+    var STATE = {all:[], page:1, per:10, loading:false, currentCategory:0};
     var el = document.querySelector('.news-list-container');
     if(!el) return;
 
@@ -1078,10 +1078,19 @@
         STATE.loading = true;
         el.innerHTML = '<div style="text-align:center;padding:40px;color:#666;font-size:16px">加载中...</div>';
         try {
-            var r = await fetch('api/news.php?page=1&limit=100&t='+Date.now(), {method:'GET',cache:'no-store'});
+            var url = 'api/news.php?page=1&limit=100&t='+Date.now();
+            if(STATE.currentCategory > 0) url += '&category_id='+STATE.currentCategory;
+            var r = await fetch(url, {method:'GET',cache:'no-store'});
             if(!r.ok) throw new Error('HTTP '+r.status);
             var d = JSON.parse(await r.text());
-            if(!d.success || !d.data || !d.data.news || d.data.news.length===0) {
+            if(!d.success || !d.data) {
+                el.innerHTML = '<div style="text-align:center;padding:40px;color:#999">暂无内容</div>'; return;
+            }
+            // Update categories dynamically
+            if(d.data.categories && Array.isArray(d.data.categories)) {
+                updateCategories(d.data.categories);
+            }
+            if(!d.data.news || d.data.news.length===0) {
                 el.innerHTML = '<div style="text-align:center;padding:40px;color:#999">暂无内容</div>'; return;
             }
             STATE.all = d.data.news;
@@ -1090,6 +1099,43 @@
             el.innerHTML = '<div style="text-align:center;padding:40px;color:red;font-size:18px">加载失败: '+e.message+'</div>';
         }
         STATE.loading = false;
+    }
+
+    function updateCategories(cats){
+        var container = document.getElementById('newsCategories');
+        if(!container) return;
+        var current = container.querySelectorAll('.news-category');
+        var existingHtml = '';
+        for(var i=0;i<current.length;i++){
+            existingHtml += current[i].outerHTML;
+        }
+        // Build new category list from API data
+        var html = '<a href="#" class="news-category'+(STATE.currentCategory===0?' active':'')+'" data-cat-id="0">全部资讯</a>';
+        for(var i=0;i<cats.length;i++){
+            var c = cats[i];
+            var active = (parseInt(c.id) === STATE.currentCategory) ? ' active' : '';
+            html += '<a href="#" class="news-category'+active+'" data-cat-id="'+c.id+'">'+escapeHtml(c.name)+'</a>';
+        }
+        container.innerHTML = html;
+        // Bind click events
+        container.querySelectorAll('.news-category').forEach(function(link){
+            link.addEventListener('click', function(e){
+                e.preventDefault();
+                var catId = parseInt(this.dataset.catId);
+                STATE.currentCategory = catId;
+                STATE.page = 1;
+                // Update active class
+                container.querySelectorAll('.news-category').forEach(function(l){l.classList.remove('active');});
+                this.classList.add('active');
+                loadNews();
+            });
+        });
+    }
+
+    function escapeHtml(str){
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
     }
 
     function renderPage(){
@@ -1103,7 +1149,7 @@
             var t = a.title||'', s = a.summary||'', dt = (a.date||a.created_at||'').substring(0,10);
             var img = a.cover_image ? '../'+a.cover_image : '';
             var imgHtml = '';
-            if(img) imgHtml = '<div style="flex:0 0 120px;width:120px;height:90px;overflow:hidden;flex-shrink:0;border-radius:8px;margin-top:10px"><img src="'+img+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.remove()"></div>';
+            if(img) imgHtml = '<div style="flex:0 0 120px;width:120px;height:90px;overflow:hidden;flex-shrink:0;border-radius:8px;margin-top:10px"><img src="'+img+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.style.display=\'none\'"></div>';
             html += '<div style="background:#fff;border-radius:10px;margin:10px 0;box-shadow:0 1px 8px rgba(0,0,0,0.06);display:flex;align-items:flex-start;overflow:hidden">';
             if(imgHtml) html += imgHtml;
             html += '<div style="flex:1;padding:14px 14px 14px 10px;overflow:hidden">';
@@ -1114,11 +1160,22 @@
         }
         if(items.length===0) html = '<div style="text-align:center;padding:40px;color:#999">暂无内容</div>';
 
-        // Pagination
-        var pag = '<div style="display:flex;justify-content:center;align-items:center;gap:6px;margin:20px 0">';
-        pag += '<button onclick="changePage(-1)" style="width:38px;height:38px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#9ca3af"'+(pg<=1?' disabled style="width:38px;height:38px;border:1px solid #f0f0f0;border-radius:6px;background:#f9fafb;font-size:13px;color:#e5e7eb"':'')+'>&lt;</button>';
-        pag += '<button onclick="changePage(1)" style="width:38px;height:38px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#9ca3af"'+(pg>=pages?' disabled style="width:38px;height:38px;border:1px solid #f0f0f0;border-radius:6px;background:#f9fafb;font-size:13px;color:#e5e7eb"':'')+'>&gt;</button>';
-        pag += '</div>';
+        var pag = '';
+        if(pages > 1){
+            pag = '<div style="display:flex;justify-content:center;align-items:center;gap:6px;margin:20px 0">';
+            if(pg > 1) {
+                pag += '<button onclick="changePage(-1)" style="width:38px;height:38px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#333">&lt;</button>';
+            } else {
+                pag += '<button disabled style="width:38px;height:38px;border:1px solid #f0f0f0;border-radius:6px;background:#f9fafb;font-size:13px;color:#e5e7eb">&lt;</button>';
+            }
+            pag += '<span style="width:38px;text-align:center;font-size:13px;color:#666">'+pg+'/'+pages+'</span>';
+            if(pg < pages) {
+                pag += '<button onclick="changePage(1)" style="width:38px;height:38px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#333">&gt;</button>';
+            } else {
+                pag += '<button disabled style="width:38px;height:38px;border:1px solid #f0f0f0;border-radius:6px;background:#f9fafb;font-size:13px;color:#e5e7eb">&gt;</button>';
+            }
+            pag += '</div>';
+        }
 
         el.innerHTML = html + pag;
     }

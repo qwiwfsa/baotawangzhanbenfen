@@ -35,7 +35,7 @@ $sql = "SELECT id, title, summary, content, cover_image, category_id, status, cr
 if ($categoryId > 0) {
     $sql .= " AND category_id = " . intval($categoryId);
 }
-$sql .= " ORDER BY updated_at DESC, created_at DESC LIMIT " . intval($limit) . " OFFSET " . intval($offset);
+$sql .= " ORDER BY is_top DESC, sort_order ASC, updated_at DESC, created_at DESC LIMIT " . intval($limit) . " OFFSET " . intval($offset);
 
 $result = $db->query($sql);
 $rows = [];
