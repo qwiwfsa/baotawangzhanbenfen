@@ -527,20 +527,24 @@ body {
 main#main-content {
     flex: 1 0 auto;
 }
-/* 页脚只保留版权和免责，确保固定在底部 */
-.footer .footer-main {
-    display: none !important;
-}
 .footer {
-    padding-top: 0 !important;
     flex-shrink: 0;
 }
-.footer .footer-container > .footer-bottom {
-    display: block !important;
-    border-top: none !important;
-    padding-top: 30px !important;
-    padding-bottom: 20px !important;
-    text-align: center !important;
+
+.footer-icp {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.footer-icp a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-icp a:hover {
+    color: #6b7280;
 }
 </style>
 
@@ -620,7 +624,43 @@ main#main-content {
     </div>
 
     <!-- 页脚 -->
-<?php include 'includes/footer.php'; ?>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo"><img src="uploads/logo.png?v=20260502041100" alt="Yao资金网" style="height:48px;width:auto;"></div>
+
+                    <p class="footer-desc">专业资金业务服务商，提供上市公司过桥、企业摆账、银行存款、应收账款融资等全方位资金服务</p>
+                </div>
+                <div class="footer-nav">                   <h4 class="footer-nav-title">快速链接</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="services.html">业务范围</a></li>
+                        <li><a href="cases.html">成功案例</a></li>
+                        <li><a href="advantages.html">服务优势</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">                   <h4 class="footer-nav-title">更多内容</h4>
+                    <ul class="footer-nav-list">
+                        <li><a href="news.php">行业资讯</a></li>
+                        <li><a href="faq.html">常见问题</a></li>
+                        <li><a href="contact.html">联系我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">                   <h4 class="footer-nav-title">联系方式</h4>
+                    <ul class="footer-nav-list">
+                        <li><i class="fas fa-phone"></i> 13552883008</li>
+                        <li><i class="fas fa-user"></i> 王总</li>
+                        <li><i class="fas fa-envelope"></i> wanglizhongguo@126.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2024 Yao资金网 宏都资本版权所有</p>
+                <p class="footer-icp"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">粤ICP备2026052915号</a></p>
+            </div>
+        </div>
+    </footer>
 
 
     <script src="js/main.js"></script>
