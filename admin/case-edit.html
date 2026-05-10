@@ -347,6 +347,7 @@
                         <div class="form-section-header">
                             <i class="fas fa-lightbulb"></i>
                             <span class="form-section-title">服务亮点</span>
+                            <input type="text" class="form-input" id="highlightTitle" placeholder="自定义服务亮点标题（如：资方能配合哪些）" style="margin-left: auto; max-width: 320px;" onchange="currentCase.highlightTitle = this.value">
                         </div>
                         <div class="form-section-body">
                             <div class="highlights-list" id="highlightsList"></div>
@@ -401,7 +402,7 @@
 
     <script>
         let currentCase = {
-            id: '', title: '', type: '企业过桥', summary: '', amount: '', images: [], video: '', highlights: [], process: [], status: 'draft'
+            id: '', title: '', type: '企业过桥', summary: '', amount: '', images: [], video: '', highlights: [], process: [], status: 'draft', highlightTitle: ''
         };
         
         // 操作历史栈（用于撤回/重做功能）
@@ -513,6 +514,7 @@
             document.getElementById('caseAmount').value = currentCase.amount || '';
             document.getElementById('caseSummary').value = currentCase.summary || '';
             document.getElementById('caseDetail').value = currentCase.detail || '';
+            document.getElementById('highlightTitle').value = currentCase.highlightTitle || '';
             document.getElementById('hasVideo').checked = !!currentCase.video;
             toggleVideo();
             renderImages();
@@ -646,6 +648,7 @@
                 document.getElementById('caseSeoTitle').value = currentCase.seo_title || '';
                 document.getElementById('caseSeoKeywords').value = currentCase.seo_keywords || '';
                 document.getElementById('caseSeoDescription').value = currentCase.seo_description || '';
+                document.getElementById('highlightTitle').value = currentCase.highlightTitle || '';
                 document.getElementById('hasVideo').checked = !!currentCase.video;
                 toggleVideo();
                 renderImages();
@@ -972,6 +975,7 @@
             currentCase.seo_title = document.getElementById('caseSeoTitle').value.trim();
             currentCase.seo_keywords = document.getElementById('caseSeoKeywords').value.trim();
             currentCase.seo_description = document.getElementById('caseSeoDescription').value.trim();
+            currentCase.highlightTitle = document.getElementById('highlightTitle').value.trim();
             
             // 同步 highlights 数据 - 从DOM重新收集确保最新
             const highlightInputs = document.querySelectorAll('#highlightsList .highlight-input');

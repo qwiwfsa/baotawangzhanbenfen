@@ -69,6 +69,7 @@ if ($numericId > 0) {
                 'coverImage' => $contentData['coverImage'] ?? $row['image'] ?? '',
                 'images' => $contentData['images'] ?? [],
                 'highlights' => $contentData['highlights'] ?? [],
+                'highlightTitle' => $contentData['highlightTitle'] ?? '',
                 'process' => $contentData['process'] ?? [],
                 'hasVideo' => $contentData['hasVideo'] ?? false,
                 'video' => $contentData['video'] ?? '',

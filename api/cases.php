@@ -63,6 +63,7 @@ try {
             'images' => $contentData['images'] ?? [],
             'detail' => $contentData['detail'] ?? $row['description'],
             'highlights' => $contentData['highlights'] ?? [],
+            'highlightTitle' => $contentData['highlightTitle'] ?? '',
             'process' => $contentData['process'] ?? [],
             'hasVideo' => $contentData['hasVideo'] ?? false,
             'video' => $contentData['video'] ?? '',

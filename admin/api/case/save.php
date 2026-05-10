@@ -58,6 +58,7 @@ $status = (isset($data['status']) && $data['status'] === 'published') ? 1 : 0;
 $content = json_encode([
     'detail' => $data['detail'] ?? $description,
     'highlights' => $data['highlights'] ?? [],
+    'highlightTitle' => $data['highlightTitle'] ?? '',
     'process' => $data['process'] ?? [],
     'images' => $images,
     'coverImage' => $data['coverImage'] ?? $image,

@@ -219,7 +219,7 @@
 
                         <!-- 资方能配合哪些 -->
                         <div class="case-highlights">
-                            <h3 class="case-highlights-title">
+                            <h3 class="case-highlights-title" id="highlightsTitle">
                                 <i class="fas fa-handshake"></i>
                                 资方能配合哪些
                             </h3>
@@ -439,6 +439,13 @@
             // 渲染描述
             document.getElementById('caseDescription').innerHTML = caseItem.detail;
 
+            // 更新服务亮点标题
+            const highlightsTitleEl = document.getElementById('highlightsTitle');
+            console.log('caseItem.highlightTitle:', caseItem.highlightTitle); // 调试用
+            if (highlightsTitleEl && caseItem.highlightTitle) {
+                highlightsTitleEl.innerHTML = `<i class="fas fa-handshake"></i> ${caseItem.highlightTitle}`;
+            }
+
             // 渲染亮点（资方能配合哪些）
             document.getElementById('caseHighlights').innerHTML = caseItem.highlights.map(h => `
                 <div class="case-highlight-item">
@@ -635,7 +642,7 @@
         // 从服务器加载所有案例
         async function loadAllCasesFromServer() {
             try {
-                const response = await fetch(basePath + 'api/cases.php');
+                const response = await fetch(basePath + 'api/cases.php?t=' + Date.now());
                 const result = await response.json();
                 if (result.success && result.cases) {
                     return result.cases.filter(c => c.status === 'published');
@@ -834,6 +841,12 @@
             // 渲染描述
             document.getElementById('caseDescription').innerHTML = caseData.detail;
             
+            // 更新服务亮点标题
+            const highlightsTitleEl = document.getElementById('highlightsTitle');
+            if (highlightsTitleEl && caseData.highlightTitle) {
+                highlightsTitleEl.innerHTML = `<i class="fas fa-handshake"></i> ${caseData.highlightTitle}`;
+            }
+
             // 渲染亮点（资方能配合哪些）
             const highlights = caseData.highlights || [];
             document.getElementById('caseHighlights').innerHTML = highlights.map(h => `
