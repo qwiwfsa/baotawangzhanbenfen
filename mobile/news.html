@@ -1086,6 +1086,43 @@ data-share-copy="复制链接"><head>
     var el = document.querySelector('.news-list-container');
     if(!el) return;
 
+    // 默认SEO（全部资讯）
+    var NEWS_DEFAULT_SEO = {
+        title: '资金行业资讯 | 企业摆账 - 过桥短拆行业动态',
+        keywords: '资金行业新闻，企业融资资讯，银行冲量政策，工程亮资新规，实缴验资政策',
+        description: '提供资金行业最新政策、市场动态解读，包含过桥短拆、工程亮资、实缴验资、企业摆账行业新规资讯。'
+    };
+
+    // 分类SEO同步
+    function syncCategorySEO(catId) {
+        if (catId === 0) {
+            document.title = NEWS_DEFAULT_SEO.title;
+            var kw = document.querySelector('meta[name="keywords"]');
+            if (kw) kw.content = NEWS_DEFAULT_SEO.keywords;
+            var desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.content = NEWS_DEFAULT_SEO.description;
+            return;
+        }
+        var seoXhr = new XMLHttpRequest();
+        seoXhr.open('GET', '../api/category-seo.php?type=news&id=' + catId, true);
+        seoXhr.onload = function() {
+            if (seoXhr.status === 200) {
+                try {
+                    var resp = JSON.parse(seoXhr.responseText);
+                    if (resp.code === 0 && resp.data) {
+                        var seo = resp.data;
+                        if (seo.seo_title) document.title = seo.seo_title;
+                        var kw = document.querySelector('meta[name="keywords"]');
+                        if (kw && seo.seo_keywords) kw.content = seo.seo_keywords;
+                        var desc = document.querySelector('meta[name="description"]');
+                        if (desc && seo.seo_description) desc.content = seo.seo_description;
+                    }
+                } catch(e) {}
+            }
+        };
+        seoXhr.send();
+    }
+
     async function loadNews(){
         STATE.loading = true;
         el.innerHTML = '<div style="text-align:center;padding:40px;color:#666;font-size:16px">加载中...</div>';
@@ -1139,6 +1176,7 @@ data-share-copy="复制链接"><head>
                 // Update active class
                 container.querySelectorAll('.news-category').forEach(function(l){l.classList.remove('active');});
                 this.classList.add('active');
+                syncCategorySEO(catId);
                 loadNews();
             });
         });
