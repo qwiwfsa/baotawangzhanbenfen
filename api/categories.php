@@ -13,7 +13,7 @@ try {
     $db = getDB();
     
     // 获取分类列表
-    $result = $db->query("SELECT id, name, description, sort_order FROM cms_categories ORDER BY sort_order ASC, id ASC");
+    $result = $db->query("SELECT id, name, description, seo_title, seo_keywords, seo_description, sort_order FROM cms_categories ORDER BY sort_order ASC, id ASC");
     $categories = [];
     if ($result) {
         $categories = $result->fetch_all(MYSQLI_ASSOC);

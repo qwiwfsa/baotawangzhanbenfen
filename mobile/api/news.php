@@ -62,7 +62,7 @@ foreach ($rows as $row) {
 }
 
 // 获取分类列表
-$catResult = $db->query("SELECT id, name FROM cms_categories ORDER BY sort_order ASC, id ASC");
+$catResult = $db->query("SELECT id, name, seo_title, seo_keywords, seo_description FROM cms_categories ORDER BY sort_order ASC, id ASC");
 $categories = [];
 if ($catResult) {
     while ($cat = $catResult->fetch_assoc()) {

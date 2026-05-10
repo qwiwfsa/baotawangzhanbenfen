@@ -60,8 +60,8 @@ try {
 
 switch ($method) {
     case 'GET':
-        // 获取分类列表 - 只选择必要字段
-        $result = $conn->query("SELECT id, name, description, sort_order FROM cms_categories ORDER BY sort_order ASC, id ASC");
+        // 获取分类列表 - 包含SEO字段
+        $result = $conn->query("SELECT id, name, description, seo_title, seo_keywords, seo_description, sort_order FROM cms_categories ORDER BY sort_order ASC, id ASC");
         $categories = [];
         while ($row = $result->fetch_assoc()) {
             $categories[] = $row;
@@ -82,10 +82,13 @@ switch ($method) {
         
         $name = trim($data['name']);
         $description = isset($data['description']) ? trim($data['description']) : '';
+        $seo_title = isset($data['seo_title']) ? trim($data['seo_title']) : '';
+        $seo_keywords = isset($data['seo_keywords']) ? trim($data['seo_keywords']) : '';
+        $seo_description = isset($data['seo_description']) ? trim($data['seo_description']) : '';
         $sortOrder = isset($data['sort_order']) ? intval($data['sort_order']) : 0;
         
-        $stmt = $conn->prepare("INSERT INTO cms_categories (name, description, sort_order) VALUES (?, ?, ?)");
-        $stmt->bind_param("ssi", $name, $description, $sortOrder);
+        $stmt = $conn->prepare("INSERT INTO cms_categories (name, description, seo_title, seo_keywords, seo_description, sort_order) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $name, $description, $seo_title, $seo_keywords, $seo_description, $sortOrder);
         
         if ($stmt->execute()) {
             echo json_encode([
@@ -132,10 +135,13 @@ switch ($method) {
         
         $name = trim($data['name']);
         $description = isset($data['description']) ? trim($data['description']) : '';
+        $seo_title = isset($data['seo_title']) ? trim($data['seo_title']) : '';
+        $seo_keywords = isset($data['seo_keywords']) ? trim($data['seo_keywords']) : '';
+        $seo_description = isset($data['seo_description']) ? trim($data['seo_description']) : '';
         $sortOrder = isset($data['sort_order']) ? intval($data['sort_order']) : 0;
         
-        $stmt = $conn->prepare("UPDATE cms_categories SET name = ?, description = ?, sort_order = ? WHERE id = ?");
-        $stmt->bind_param("ssii", $name, $description, $sortOrder, $id);
+        $stmt = $conn->prepare("UPDATE cms_categories SET name = ?, description = ?, seo_title = ?, seo_keywords = ?, seo_description = ?, sort_order = ? WHERE id = ?");
+        $stmt->bind_param("sssssii", $name, $description, $seo_title, $seo_keywords, $seo_description, $sortOrder, $id);
         
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => '分类更新成功']);

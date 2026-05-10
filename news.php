@@ -160,6 +160,25 @@ DeviceDetector::redirect();
         .news-pagination .pagination-btn i {
             font-size: 13px;
         }
+
+        /* 分类SEO信息区域 */
+        .category-seo-info {
+            padding: 0 0 8px;
+            margin-bottom: 0;
+        }
+        .category-seo-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0 0 6px;
+            line-height: 1.3;
+        }
+        .category-seo-desc {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+            line-height: 1.6;
+        }
     </style>
 
 <script>
@@ -220,6 +239,12 @@ DeviceDetector::redirect();
                         <a href="#" class="news-category active" data-cat-id="0">全部资讯</a>
                         <!-- 分类将通过JS动态加载 -->
                     </div>
+                </div>
+
+                <!-- 分类SEO信息（点击分类时显示） -->
+                <div class="category-seo-info" id="categorySeoInfo">
+                    <h2 class="category-seo-title" id="categorySeoTitle"></h2>
+                    <p class="category-seo-desc" id="categorySeoDesc"></p>
                 </div>
 
                 <!-- 精选资讯（大图展示） -->
@@ -381,7 +406,7 @@ DeviceDetector::redirect();
             console.log('[News] 分类加载完成');
         }
         
-        // 更新活跃分类样式
+        // 更新活跃分类样式 和 SEO信息
         function updateActiveCategory() {
             document.querySelectorAll('.news-category').forEach(cat => {
                 cat.classList.remove('active');
@@ -389,6 +414,60 @@ DeviceDetector::redirect();
                     cat.classList.add('active');
                 }
             });
+            updateCategorySeo();
+        }
+
+        // 更新分类SEO信息
+        function updateCategorySeo() {
+            const seoTitle = document.getElementById('categorySeoTitle');
+            const seoDesc = document.getElementById('categorySeoDesc');
+            
+            if (!seoTitle) return;
+            
+            const categories = JSON.parse(localStorage.getItem('cms_categories') || '[]');
+            
+            if (currentCategoryId > 0) {
+                const cat = categories.find(c => parseInt(c.id) === currentCategoryId);
+                if (cat) {
+                    // SEO标题
+                    if (cat.seo_title) {
+                        seoTitle.textContent = cat.seo_title;
+                        seoTitle.style.display = 'block';
+                    } else {
+                        seoTitle.textContent = cat.name;
+                        seoTitle.style.display = 'block';
+                    }
+                    
+                    // SEO描述
+                    if (cat.seo_description) {
+                        seoDesc.textContent = cat.seo_description;
+                        seoDesc.style.display = 'block';
+                    } else {
+                        seoDesc.textContent = '';
+                        seoDesc.style.display = 'none';
+                    }
+                    
+                    // 动态更新页面标题和meta
+                    document.title = (cat.seo_title || cat.name) + ' - 行业资讯 - Yao资金网';
+                    
+                    // 更新keywords
+                    if (cat.seo_keywords) {
+                        var kw = document.querySelector('meta[name="keywords"]');
+                        if (kw) kw.content = cat.seo_keywords;
+                    }
+                    
+                    // 更新description
+                    if (cat.seo_description) {
+                        var desc = document.querySelector('meta[name="description"]');
+                        if (desc) desc.content = cat.seo_description;
+                    }
+                }
+            } else {
+                // 全部资讯 - 隐藏SEO信息
+                seoTitle.style.display = 'none';
+                seoDesc.style.display = 'none';
+                document.title = '行业资讯 - Yao资金网';
+            }
         }
         
         // 从服务器API或localStorage加载已发布的文章（优先从数据库）

@@ -684,8 +684,21 @@ main#main-content {
 
         // 渲染文章
         function renderArticle(article) {
-            // 更新标题
-            document.title = (article.title || '文章详情') + ' - Yao资金网';
+            // 更新标题 - 优先使用文章的SEO字段
+            var seoTitle = article.seo_title || article.title || '文章详情';
+            var seoKeywords = article.seo_keywords || '';
+            var seoDesc = article.seo_description || article.summary || '';
+            document.title = seoTitle + ' - Yao资金网';
+            // 更新meta keywords
+            if (seoKeywords) {
+                var kw = document.querySelector('meta[name="keywords"]');
+                if (kw) kw.content = seoKeywords;
+            }
+            // 更新meta description
+            if (seoDesc) {
+                var desc = document.querySelector('meta[name="description"]');
+                if (desc) desc.content = seoDesc;
+            }
 
             // 头部
             const date = article.created_at || article.date || new Date().toISOString();
