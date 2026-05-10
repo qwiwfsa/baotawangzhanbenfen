@@ -1194,7 +1194,7 @@
 
     <script>
         // API基础地址
-        const API_BASE = '/api/';
+        const API_BASE = 'api/';
 
         // 检查登录状态
         async function checkAuth() {
@@ -1318,7 +1318,6 @@
                     renderPageStatsTable(data.pageViews || []);
                 }
             } catch (error) {
-                console.log('访问统计加载失败:', error);
                 // 显示默认数据
                 document.getElementById('statTotalVisits').textContent = '0';
                 document.getElementById('statTodayVisits').textContent = '0';
@@ -1401,17 +1400,10 @@
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.log('API加载失败，使用本地存储:', error);
                 // 设置默认值
                 document.getElementById('editedContent').textContent = '0';
                 document.getElementById('lastUpdate').textContent = '无';
-                document.getElementById('publishedContent').textContent = '0';
-                            } else {
-                    document.getElementById('lastUpdate').textContent = '从未';
-                }
-
-                const lastUser = localStorage.getItem('cms_username') || '-';
-                document.getElementById('lastUser').textContent = lastUser;
+                document.getElementById('lastUser').textContent = localStorage.getItem('cms_username') || '-';
             }
         }
 
@@ -1577,7 +1569,7 @@
                         credentials: 'include'
                     });
                 } catch (error) {
-                    console.log('API退出失败:', error);
+                    console.debug('API退出失败:', error);
                 }
                 
                 // 同时清除本地存储
