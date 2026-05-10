@@ -112,6 +112,7 @@
         return '<div class="article-share-compact">'
             + '<span class="social-share-label">' + label + '</span>'
             + '<button class="share-btn wechat" onclick="openWechatShare(\'' + url.replace(/'/g, "\\'") + '\')" title="微信"><i class="fab fa-weixin"></i></button>'
+            + '<button class="share-btn wechat-moments" onclick="openWechatShare(\'' + url.replace(/'/g, "\\'") + '\')" title="朋友圈"><i class="fas fa-users"></i></button>'
             + '<button class="share-btn qq" onclick="window.open(\'https://connect.qq.com/widget/shareqq/index.html?url=' + u + '&title=' + t + '\',\'_blank\',\'width=680,height=520\')" title="QQ"><i class="fab fa-qq"></i></button>'
             + '<button class="share-btn weibo" onclick="window.open(\'https://service.weibo.com/share/share.php?url=' + u + '&title=' + t + '\',\'_blank\',\'width=680,height=520\')" title="微博"><i class="fab fa-weibo"></i></button>'
             + '<button class="share-btn copy" onclick="copyLink(\'' + url.replace(/'/g, "\\'") + '\',this)" title="复制链接"><i class="fas fa-link"></i></button>'

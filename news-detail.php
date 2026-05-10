@@ -551,6 +551,8 @@ main#main-content {
 <script>
 (function(){var ua=navigator.userAgent;if(/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone|webOS|Opera Mini|IEMobile/i.test(ua)&&window.location.pathname.indexOf("/mobile/")===-1){var p=window.location.pathname.split("/").pop();if(p){window.location.href="mobile/"+p;}}})();
 </script>
+    <!-- 社交分享样式 -->
+    <link rel="stylesheet" href="css/social-share.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">跳转到主要内容</a>
@@ -715,8 +717,39 @@ main#main-content {
             document.getElementById('articleContent').innerHTML = `
                 <div class="article-detail-main">
                     <div class="article-body">${content}</div>
+                    <div class="article-share-full">
+                        <div class="share-left">
+                            <span class="share-title">分享到：</span>
+                            <div class="share-buttons">
+                                <button class="share-btn wechat" id="shareBtnWechat" title="微信"><i class="fab fa-weixin"></i></button>
+                                <button class="share-btn wechat-moments" id="shareBtnMoments" title="朋友圈"><i class="fas fa-users"></i></button>
+                                <button class="share-btn qq" id="shareBtnQQ" title="QQ"><i class="fab fa-qq"></i></button>
+                                <button class="share-btn weibo" id="shareBtnWeibo" title="微博"><i class="fab fa-weibo"></i></button>
+                                <button class="share-btn copy" id="shareBtnCopy" title="复制链接"><i class="fas fa-link"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
+            
+            // 绑定分享按钮事件
+            setTimeout(function() {
+                var url = window.location.href.split('#')[0];
+                var titleEl = document.querySelector('h1.article-detail-title');
+                var title = titleEl ? titleEl.textContent.trim() : document.title;
+                var u = encodeURIComponent(url);
+                var t = encodeURIComponent(title);
+                var wechatBtn = document.getElementById('shareBtnWechat');
+                var momentsBtn = document.getElementById('shareBtnMoments');
+                var qqBtn = document.getElementById('shareBtnQQ');
+                var weiboBtn = document.getElementById('shareBtnWeibo');
+                var copyBtn = document.getElementById('shareBtnCopy');
+                if (wechatBtn) wechatBtn.onclick = function(){ openWechatShare(url); };
+                if (momentsBtn) momentsBtn.onclick = function(){ openWechatShare(url); };
+                if (qqBtn) qqBtn.onclick = function(){ window.open('https://connect.qq.com/widget/shareqq/index.html?url=' + u + '&title=' + t, '_blank', 'width=680,height=520'); };
+                if (weiboBtn) weiboBtn.onclick = function(){ window.open('https://service.weibo.com/share/share.php?url=' + u + '&title=' + t, '_blank', 'width=680,height=520'); };
+                if (copyBtn) copyBtn.onclick = function(){ copyLink(url, this); };
+            }, 100);
         }
 
         // 渲染相关文章
@@ -792,6 +825,8 @@ main#main-content {
             renderRelated(related);
         });
     </script>
+    <!-- 社交分享功能 -->
+    <script src="js/social-share.js"></script>
 </body>
 </html>
 

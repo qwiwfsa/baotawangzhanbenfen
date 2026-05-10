@@ -165,6 +165,8 @@ DeviceDetector::redirect();
 <script>
 (function(){var ua=navigator.userAgent;if(/Mobile|Android|iPhone|iPod|BlackBerry|Windows Phone|webOS|Opera Mini|IEMobile/i.test(ua)&&window.location.pathname.indexOf("/mobile/")===-1){var p=window.location.pathname.split("/").pop();if(p){window.location.href="mobile/"+p;}}})();
 </script>
+    <!-- 社交分享样式 -->
+    <link rel="stylesheet" href="css/social-share.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">跳转到主要内容</a>
@@ -610,6 +612,8 @@ DeviceDetector::redirect();
             }
         })();
     </script>
+    <!-- 社交分享功能 -->
+    <script src="js/social-share.js"></script>
 </body>
 </html>
 
