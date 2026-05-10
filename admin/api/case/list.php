@@ -53,6 +53,9 @@ try {
             'process' => $contentData['process'] ?? [],
             'hasVideo' => $contentData['hasVideo'] ?? false,
             'video' => $contentData['video'] ?? '',
+            'seo_title' => $row['seo_title'] ?? '',
+            'seo_keywords' => $row['seo_keywords'] ?? '',
+            'seo_description' => $row['seo_description'] ?? '',
             'lastModified' => $row['updated_at'] ?? ''
         ];
     }

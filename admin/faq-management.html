@@ -691,6 +691,25 @@
                         <!-- 动态生成分类选项 -->
                     </select>
                 </div>
+                <details class="form-group" style="margin-bottom: 12px;">
+                    <summary class="form-label" style="cursor: pointer; display: inline; font-weight: 500; color: #6b7280;">
+                        <i class="fas fa-search" style="margin-right: 4px;"></i>SEO设置（可选）
+                    </summary>
+                    <div style="margin-top: 8px; padding: 10px; background: #f9fafb; border-radius: 6px;">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 12px;">SEO标题</label>
+                            <input type="text" class="form-input" id="faqSeoTitle" placeholder="留空则使用问题作为标题">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 12px;">SEO关键词</label>
+                            <input type="text" class="form-input" id="faqSeoKeywords" placeholder="多个关键词用逗号分隔">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 12px;">SEO描述</label>
+                            <textarea class="form-textarea" id="faqSeoDescription" rows="2" placeholder="搜索引擎显示的描述文字"></textarea>
+                        </div>
+                    </div>
+                </details>
                 <div class="form-group">
                     <label class="form-label">回答 <span class="required">*</span></label>
                     <textarea class="form-textarea" id="faqAnswer" rows="6" placeholder="请输入回答内容"></textarea>
@@ -803,6 +822,7 @@
 
         // 分类数据（从localStorage加载）
         let categoryLabels = {};
+        let categorySeoData = {}; // { key: { seo_title, seo_keywords, seo_description } }
         
         // 默认分类（与前端业务分类一致）
         const defaultCategories = {
@@ -824,11 +844,19 @@
                 if (result.categories_order && result.categories_order.length > 0) {
                     // 按服务器返回的排序顺序重建对象
                     const orderedLabels = {};
+                    const orderedSeo = {};
                     result.categories_order.forEach(cat => {
                         orderedLabels[cat.key] = cat.label || result.categories[cat.key] || cat.key;
+                        orderedSeo[cat.key] = {
+                            seo_title: cat.seo_title || '',
+                            seo_keywords: cat.seo_keywords || '',
+                            seo_description: cat.seo_description || ''
+                        };
                     });
                     categoryLabels = orderedLabels;
+                    categorySeoData = orderedSeo;
                     localStorage.setItem('cms_faq_categories', JSON.stringify(categoryLabels));
+                    localStorage.setItem('cms_faq_categories_seo', JSON.stringify(categorySeoData));
                     loadedFromServer = true;
                 } else if (result.categories && Object.keys(result.categories).length > 0) {
                     categoryLabels = result.categories;
@@ -841,6 +869,7 @@
             
             if (!loadedFromServer) {
                 const saved = localStorage.getItem('cms_faq_categories');
+                const savedSeo = localStorage.getItem('cms_faq_categories_seo');
                 const categoryVersion = localStorage.getItem('cms_faq_categories_version');
                 const currentVersion = '3.1';
                 
@@ -851,19 +880,31 @@
                     localStorage.setItem('cms_faq_categories', JSON.stringify(categoryLabels));
                     localStorage.setItem('cms_faq_categories_version', currentVersion);
                 }
+                if (savedSeo) {
+                    try { categorySeoData = JSON.parse(savedSeo); } catch (e) { categorySeoData = {}; }
+                } else {
+                    categorySeoData = {};
+                }
             }
         }
         
         // 保存分类（同时保存到服务器和本地）
         async function saveCategories() {
             localStorage.setItem('cms_faq_categories', JSON.stringify(categoryLabels));
+            localStorage.setItem('cms_faq_categories_seo', JSON.stringify(categorySeoData));
             
             // 同步到服务器
             try {
-                const catArray = Object.keys(categoryLabels).map(key => ({
-                    key: key,
-                    label: categoryLabels[key]
-                }));
+                const catArray = Object.keys(categoryLabels).map(key => {
+                    const seo = categorySeoData[key] || { seo_title: '', seo_keywords: '', seo_description: '' };
+                    return {
+                        key: key,
+                        label: categoryLabels[key],
+                        seo_title: seo.seo_title || '',
+                        seo_keywords: seo.seo_keywords || '',
+                        seo_description: seo.seo_description || ''
+                    };
+                });
                 
                 const formData = new URLSearchParams();
                 formData.append('action', 'save_categories');
@@ -1114,6 +1155,9 @@
             document.getElementById('faqId').value = '';
             document.getElementById('faqQuestion').value = '';
             document.getElementById('faqAnswer').value = '';
+            document.getElementById('faqSeoTitle').value = '';
+            document.getElementById('faqSeoKeywords').value = '';
+            document.getElementById('faqSeoDescription').value = '';
             updateFAQCategorySelect('general');
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus-circle" style="color: #3b82f6; margin-right: 8px;"></i>添加FAQ';
             document.getElementById('faqModal').classList.add('show');
@@ -1131,6 +1175,9 @@
             document.getElementById('faqId').value = faq.id;
             document.getElementById('faqQuestion').value = faq.question;
             document.getElementById('faqAnswer').value = faq.answer;
+            document.getElementById('faqSeoTitle').value = faq.seo_title || '';
+            document.getElementById('faqSeoKeywords').value = faq.seo_keywords || '';
+            document.getElementById('faqSeoDescription').value = faq.seo_description || '';
             updateFAQCategorySelect(faq.category || 'general');
             document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit" style="color: #3b82f6; margin-right: 8px;"></i>编辑FAQ';
             document.getElementById('faqModal').classList.add('show');
@@ -1173,6 +1220,9 @@
                 formData.append('question', question);
                 formData.append('answer', answer);
                 formData.append('category', category);
+                formData.append('seo_title', document.getElementById('faqSeoTitle').value.trim());
+                formData.append('seo_keywords', document.getElementById('faqSeoKeywords').value.trim());
+                formData.append('seo_description', document.getElementById('faqSeoDescription').value.trim());
 
                 const response = await fetch('../admin/api/faq-save.php', {
                     method: 'POST',
@@ -1258,36 +1308,68 @@
             const container = document.getElementById('categoryList');
             const keys = Object.keys(categoryLabels);
             
-            container.innerHTML = keys.map((key, index) => `
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f9fafb; border-radius: 6px; margin-bottom: 8px;" data-cat-key="${key}">
-                    <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
-                        <div style="display: flex; flex-direction: column; gap: 2px;">
-                            <button class="cms-header-btn" style="background: #e5e7eb; color: #6b7280; padding: 2px 6px; font-size: 10px; ${index === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''}" onclick="${index === 0 ? '' : `moveCategory('${key}', -1)`}" title="上移">
-                                <i class="fas fa-chevron-up"></i>
+            container.innerHTML = keys.map((key, index) => {
+                const seo = categorySeoData[key] || { seo_title: '', seo_keywords: '', seo_description: '' };
+                return `
+                <div style="background: #f9fafb; border-radius: 6px; margin-bottom: 8px; overflow: hidden;" data-cat-key="${key}">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
+                        <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+                            <div style="display: flex; flex-direction: column; gap: 2px;">
+                                <button class="cms-header-btn" style="background: #e5e7eb; color: #6b7280; padding: 2px 6px; font-size: 10px; ${index === 0 ? 'opacity: 0.3; cursor: not-allowed;' : ''}" onclick="${index === 0 ? '' : `moveCategory('${key}', -1)`}" title="上移">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <button class="cms-header-btn" style="background: #e5e7eb; color: #6b7280; padding: 2px 6px; font-size: 10px; ${index === keys.length - 1 ? 'opacity: 0.3; cursor: not-allowed;' : ''}" onclick="${index === keys.length - 1 ? '' : `moveCategory('${key}', 1)`}" title="下移">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <span class="cat-name-display" style="font-weight: 500; color: #374151;">${categoryLabels[key]}</span>
+                                <input type="text" class="cat-name-edit form-input" style="display: none; width: 150px;" value="${categoryLabels[key]}">
+                                <span style="color: #9ca3af; font-size: 12px; margin-left: 8px;">(${key})</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="cms-header-btn btn-seo-cat" style="background: #f0fdf4; color: #059669; padding: 4px 8px; font-size: 11px;" onclick="toggleCatSeo('${key}')" title="SEO设置">
+                                <i class="fas fa-search"></i> SEO
                             </button>
-                            <button class="cms-header-btn" style="background: #e5e7eb; color: #6b7280; padding: 2px 6px; font-size: 10px; ${index === keys.length - 1 ? 'opacity: 0.3; cursor: not-allowed;' : ''}" onclick="${index === keys.length - 1 ? '' : `moveCategory('${key}', 1)`}" title="下移">
-                                <i class="fas fa-chevron-down"></i>
+                            <button class="cms-header-btn btn-edit-cat" style="background: #eff6ff; color: #3b82f6; padding: 6px 12px;" onclick="editCategory('${key}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="cms-header-btn btn-save-cat" style="display: none; background: #10b981; color: white; padding: 6px 12px;" onclick="saveCategoryEdit('${key}')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="cms-header-btn" style="background: #fef2f2; color: #ef4444; padding: 6px 12px;" onclick="deleteCategory('${key}')">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <div>
-                            <span class="cat-name-display" style="font-weight: 500; color: #374151;">${categoryLabels[key]}</span>
-                            <input type="text" class="cat-name-edit form-input" style="display: none; width: 150px;" value="${categoryLabels[key]}">
-                            <span style="color: #9ca3af; font-size: 12px; margin-left: 8px;">(${key})</span>
-                        </div>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="cms-header-btn btn-edit-cat" style="background: #eff6ff; color: #3b82f6; padding: 6px 12px;" onclick="editCategory('${key}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="cms-header-btn btn-save-cat" style="display: none; background: #10b981; color: white; padding: 6px 12px;" onclick="saveCategoryEdit('${key}')">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="cms-header-btn" style="background: #fef2f2; color: #ef4444; padding: 6px 12px;" onclick="deleteCategory('${key}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    <div class="cat-seo-panel" id="catSeo_${key}" style="display: none; padding: 0 10px 10px 10px; border-top: 1px solid #e5e7eb;">
+                        <div style="font-size: 12px; color: #6b7280; margin: 8px 0 4px;">SEO标题</div>
+                        <input type="text" class="form-input cat-seo-title" id="catSeoTitle_${key}" value="${seo.seo_title}" placeholder="分类页SEO标题" style="font-size: 12px; padding: 4px 8px;" onchange="saveCatSeoField('${key}')">
+                        <div style="font-size: 12px; color: #6b7280; margin: 8px 0 4px;">SEO关键词</div>
+                        <input type="text" class="form-input cat-seo-keywords" id="catSeoKeywords_${key}" value="${seo.seo_keywords}" placeholder="多个关键词用逗号分隔" style="font-size: 12px; padding: 4px 8px;" onchange="saveCatSeoField('${key}')">
+                        <div style="font-size: 12px; color: #6b7280; margin: 8px 0 4px;">SEO描述</div>
+                        <textarea class="form-textarea cat-seo-description" id="catSeoDescription_${key}" rows="2" placeholder="搜索引擎显示的描述文字" style="font-size: 12px; padding: 4px 8px; resize: vertical;" onchange="saveCatSeoField('${key}')">${seo.seo_description}</textarea>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
+        }
+
+        function toggleCatSeo(key) {
+            const panel = document.getElementById('catSeo_' + key);
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function saveCatSeoField(key) {
+            const titleEl = document.getElementById('catSeoTitle_' + key);
+            const keywordsEl = document.getElementById('catSeoKeywords_' + key);
+            const descEl = document.getElementById('catSeoDescription_' + key);
+            if (!categorySeoData[key]) categorySeoData[key] = { seo_title: '', seo_keywords: '', seo_description: '' };
+            categorySeoData[key].seo_title = titleEl ? titleEl.value.trim() : '';
+            categorySeoData[key].seo_keywords = keywordsEl ? keywordsEl.value.trim() : '';
+            categorySeoData[key].seo_description = descEl ? descEl.value.trim() : '';
+            await saveCategories();
+            showToast('分类SEO已保存', 'success');
         }
         
         // 移动分类排序（异步，等待服务器同步后刷新）

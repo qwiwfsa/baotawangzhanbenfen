@@ -675,6 +675,28 @@ DeviceDetector::redirect();
         }
         
         // 鏇存柊localStorage涓殑妗堜緥鏁版嵁
+        
+        // 动态更新SEO meta标签
+        function updateMetaTags(caseData) {
+            // 更新description
+            let descMeta = document.querySelector('meta[name="description"]');
+            if (!descMeta) {
+                descMeta = document.createElement('meta');
+                descMeta.name = 'description';
+                document.head.appendChild(descMeta);
+            }
+            descMeta.content = caseData.seo_description || caseData.summary || caseData.title || '案例详情';
+            
+            // 更新keywords
+            let kwMeta = document.querySelector('meta[name="keywords"]');
+            if (!kwMeta) {
+                kwMeta = document.createElement('meta');
+                kwMeta.name = 'keywords';
+                document.head.appendChild(kwMeta);
+            }
+            kwMeta.content = caseData.seo_keywords || caseData.type || '案例';
+        }
+        
         function updateLocalCase(caseData) {
             try {
                 const cases = [];
@@ -693,7 +715,11 @@ DeviceDetector::redirect();
         // 浠嶤MS鏁版嵁娓叉煋妗堜緥
         function renderCaseFromCMS(caseData) {
             // 鏇存柊椤甸潰鏍囬
-            document.title = `${caseData.title} - 妗堜緥璇︽儏 - Yao璧勯噾缃慲;
+                        // 更新页面标题
+            document.title = `${caseData.title} - 案例详情 - Yao资金网`;
+            // 更新SEO meta标签
+            updateMetaTags(caseData);
+            
             
             const typeClass = getTypeClass(caseData.type);
             

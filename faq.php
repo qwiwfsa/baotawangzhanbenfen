@@ -6,15 +6,35 @@ header('Expires: 0');
 <?php
 require_once __DIR__ . '/device-detect.php';
 DeviceDetector::redirect();
+
+// 动态SEO：根据URL参数获取分类SEO信息
+require_once __DIR__ . '/config/db.php';
+$conn = getDB();
+$pageSeo = ['title' => '常见问题 - Yao资金网', 'keywords' => '常见问题,亮资业务,过桥资金,摆账业务,云信融资出表,FAQ', 'description' => 'Yao资金网常见问题 - 解答您关于资金业务的常见疑问'];
+$activeCat = isset($_GET['cat']) ? $_GET['cat'] : '';
+if ($activeCat) {
+    $stmt = $conn->prepare("SELECT cat_label, seo_title, seo_keywords, seo_description FROM faq_categories WHERE cat_key = ?");
+    $stmt->bind_param("s", $activeCat);
+    $stmt->execute();
+    $catResult = $stmt->get_result();
+    if ($catRow = $catResult->fetch_assoc()) {
+        $catLabel = $catRow['cat_label'] ?: $activeCat;
+        $pageSeo['title'] = ($catRow['seo_title'] ?: $catLabel . ' - 常见问题') . ' - Yao资金网';
+        $pageSeo['keywords'] = $catRow['seo_keywords'] ?: $catLabel . ',常见问题,FAQ';
+        $pageSeo['description'] = $catRow['seo_description'] ?: 'Yao资金网' . $catLabel . '常见问题解答';
+    }
+    $stmt->close();
+}
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Yao资金网常见问题 - 解答您关于资金业务的常见疑问">
-    <meta name="keywords" content="常见问题,亮资业务,过桥资金,摆账业务,云信融资出表,FAQ">
-    <title>常见问题 - Yao资金网</title>
+    <meta name="description" content="<?php echo htmlspecialchars($pageSeo['description']); ?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars($pageSeo['keywords']); ?>">
+    <title><?php echo htmlspecialchars($pageSeo['title']); ?></title>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">

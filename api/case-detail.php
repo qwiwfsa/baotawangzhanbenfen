@@ -50,7 +50,7 @@ try {
         exit;
     }
     
-    $stmt = $db->prepare("SELECT id, title, company, amount, period, category, description, image, content, status, sort_order, created_at, updated_at FROM cases WHERE id = ? AND status = 1 LIMIT 1");
+    $stmt = $db->prepare("SELECT id, title, company, amount, period, category, description, image, content, status, sort_order, created_at, updated_at, seo_title, seo_keywords, seo_description FROM cases WHERE id = ? AND status = 1 LIMIT 1");
     $stmt->bind_param('i', $caseId);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -81,7 +81,10 @@ try {
         'hasVideo' => $contentData['hasVideo'] ?? false,
         'video' => $contentData['video'] ?? '',
         'status' => 'published',
-        'lastModified' => $row['updated_at']
+        'lastModified' => $row['updated_at'],
+        'seo_title' => $row['seo_title'] ?? '',
+        'seo_keywords' => $row['seo_keywords'] ?? '',
+        'seo_description' => $row['seo_description'] ?? ''
     ];
     
     echo json_encode([

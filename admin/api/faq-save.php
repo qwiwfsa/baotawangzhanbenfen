@@ -55,17 +55,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
+        $seo_title = isset($_POST['seo_title']) ? trim($_POST['seo_title']) : '';
+        $seo_keywords = isset($_POST['seo_keywords']) ? trim($_POST['seo_keywords']) : '';
+        $seo_description = isset($_POST['seo_description']) ? trim($_POST['seo_description']) : '';
+
         if ($id > 0) {
             // 更新现有FAQ
-            $stmt = $conn->prepare("UPDATE faq SET question=?, answer=?, category=? WHERE id=?");
-            $stmt->bind_param("sssi", $question, $answer, $category, $id);
+            $stmt = $conn->prepare("UPDATE faq SET question=?, answer=?, category=?, seo_title=?, seo_keywords=?, seo_description=? WHERE id=?");
+            $stmt->bind_param("ssssssi", $question, $answer, $category, $seo_title, $seo_keywords, $seo_description, $id);
             $stmt->execute();
             $stmt->close();
             echo json_encode(['code' => 0, 'msg' => '更新成功', 'id' => $id]);
         } else {
             // 新增FAQ
-            $stmt = $conn->prepare("INSERT INTO faq (question, answer, category) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $question, $answer, $category);
+            $stmt = $conn->prepare("INSERT INTO faq (question, answer, category, seo_title, seo_keywords, seo_description) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $question, $answer, $category, $seo_title, $seo_keywords, $seo_description);
             $stmt->execute();
             $newId = $conn->insert_id;
             $stmt->close();
@@ -91,12 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->query("DELETE FROM faq_categories");
         
         // 插入新数据
-        $stmt = $conn->prepare("INSERT INTO faq_categories (cat_key, cat_label, sort_order) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO faq_categories (cat_key, cat_label, sort_order, seo_title, seo_keywords, seo_description) VALUES (?, ?, ?, ?, ?, ?)");
         $sortOrder = 0;
         foreach ($categoryData as $item) {
             $key = $item['key'];
             $label = $item['label'];
-            $stmt->bind_param("ssi", $key, $label, $sortOrder);
+            $seo_title = isset($item['seo_title']) ? trim($item['seo_title']) : '';
+            $seo_keywords = isset($item['seo_keywords']) ? trim($item['seo_keywords']) : '';
+            $seo_description = isset($item['seo_description']) ? trim($item['seo_description']) : '';
+            $stmt->bind_param("ssisss", $key, $label, $sortOrder, $seo_title, $seo_keywords, $seo_description);
             $stmt->execute();
             $sortOrder++;
         }

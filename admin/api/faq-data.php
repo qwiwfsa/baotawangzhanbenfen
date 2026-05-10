@@ -108,13 +108,20 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 
 // ========== 获取分类配置 ==========
-$stmt = $conn->query("SELECT cat_key, cat_label, sort_order FROM faq_categories ORDER BY sort_order ASC");
+$stmt = $conn->query("SELECT cat_key, cat_label, sort_order, seo_title, seo_keywords, seo_description FROM faq_categories ORDER BY sort_order ASC");
 $categories = [];
 $categoriesOrder = [];
 if ($stmt) {
     while ($row = $stmt->fetch_assoc()) {
         $categories[$row['cat_key']] = $row['cat_label'];
-        $categoriesOrder[] = ['key' => $row['cat_key'], 'label' => $row['cat_label'], 'sort_order' => intval($row['sort_order'])];
+        $categoriesOrder[] = [
+            'key' => $row['cat_key'],
+            'label' => $row['cat_label'],
+            'sort_order' => intval($row['sort_order']),
+            'seo_title' => $row['seo_title'] ?? '',
+            'seo_keywords' => $row['seo_keywords'] ?? '',
+            'seo_description' => $row['seo_description'] ?? ''
+        ];
     }
     $stmt->close();
 }
@@ -130,12 +137,12 @@ if (empty($categories)) {
         'general' => '一般问题'
     ];
     $categoriesOrder = [
-        ['key' => 'liangzi', 'label' => '亮资业务', 'sort_order' => 0],
-        ['key' => 'guoqiao', 'label' => '过桥资金', 'sort_order' => 1],
-        ['key' => 'baizhang', 'label' => '摆账业务', 'sort_order' => 2],
-        ['key' => 'receivable', 'label' => '应收账款', 'sort_order' => 3],
-        ['key' => 'deposit', 'label' => '银行存款', 'sort_order' => 4],
-        ['key' => 'general', 'label' => '一般问题', 'sort_order' => 5]
+        ['key' => 'liangzi', 'label' => '亮资业务', 'sort_order' => 0, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => ''],
+        ['key' => 'guoqiao', 'label' => '过桥资金', 'sort_order' => 1, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => ''],
+        ['key' => 'baizhang', 'label' => '摆账业务', 'sort_order' => 2, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => ''],
+        ['key' => 'receivable', 'label' => '应收账款', 'sort_order' => 3, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => ''],
+        ['key' => 'deposit', 'label' => '银行存款', 'sort_order' => 4, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => ''],
+        ['key' => 'general', 'label' => '一般问题', 'sort_order' => 5, 'seo_title' => '', 'seo_keywords' => '', 'seo_description' => '']
     ];
     // 写入默认到数据库
     initDefaultCategories($conn, $categoriesOrder);

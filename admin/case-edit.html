@@ -285,6 +285,29 @@
 
                     <div class="form-section">
                         <div class="form-section-header">
+                            <i class="fas fa-search"></i>
+                            <span class="form-section-title">SEO设置（可选）</span>
+                        </div>
+                        <div class="form-section-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label class="form-label">SEO标题</label>
+                                    <input type="text" class="form-input" id="caseSeoTitle" placeholder="留空则使用案例标题">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">SEO关键词</label>
+                                    <input type="text" class="form-input" id="caseSeoKeywords" placeholder="多个关键词用逗号分隔">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">SEO描述</label>
+                                    <textarea class="form-textarea" id="caseSeoDescription" rows="3" placeholder="搜索引擎显示的描述文字"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-header">
                             <i class="fas fa-images"></i>
                             <span class="form-section-title">案例图片</span>
                         </div>
@@ -620,6 +643,9 @@
                 document.getElementById('caseAmount').value = currentCase.amount || '';
                 document.getElementById('caseSummary').value = currentCase.summary || '';
                 document.getElementById('caseDetail').value = currentCase.detail || '';
+                document.getElementById('caseSeoTitle').value = currentCase.seo_title || '';
+                document.getElementById('caseSeoKeywords').value = currentCase.seo_keywords || '';
+                document.getElementById('caseSeoDescription').value = currentCase.seo_description || '';
                 document.getElementById('hasVideo').checked = !!currentCase.video;
                 toggleVideo();
                 renderImages();
@@ -943,6 +969,9 @@
             currentCase.amount = document.getElementById('caseAmount').value.trim();
             currentCase.summary = document.getElementById('caseSummary').value.trim();
             currentCase.detail = document.getElementById('caseDetail').value.trim();
+            currentCase.seo_title = document.getElementById('caseSeoTitle').value.trim();
+            currentCase.seo_keywords = document.getElementById('caseSeoKeywords').value.trim();
+            currentCase.seo_description = document.getElementById('caseSeoDescription').value.trim();
             
             // 同步 highlights 数据 - 从DOM重新收集确保最新
             const highlightInputs = document.querySelectorAll('#highlightsList .highlight-input');

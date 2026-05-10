@@ -42,6 +42,9 @@ $amount = $data['amount'] ?? '';
 $period = $data['period'] ?? '';
 $description = $data['summary'] ?? '';
 $image = $data['image'] ?? $data['coverImage'] ?? '';
+$seo_title = $data['seo_title'] ?? '';
+$seo_keywords = $data['seo_keywords'] ?? '';
+$seo_description = $data['seo_description'] ?? '';
 
 // images 处理
 $images = $data['images'] ?? [];
@@ -82,14 +85,14 @@ try {
         } else {
             // ID存在但不在表中 -> INSERT
             $isNew = true;
-            $stmt = $conn->prepare("INSERT INTO cases (id, title, category, company, amount, period, description, image, content, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-            $stmt->bind_param("issssssssi", $caseId, $title, $category, $company, $amount, $period, $description, $image, $content, $status);
+            $stmt = $conn->prepare("INSERT INTO cases (id, title, category, company, amount, period, description, image, content, status, seo_title, seo_keywords, seo_description, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+            $stmt->bind_param("issssssssisss", $caseId, $title, $category, $company, $amount, $period, $description, $image, $content, $status, $seo_title, $seo_keywords, $seo_description);
         }
     } else {
         // 新建：自增ID
         $isNew = true;
-        $stmt = $conn->prepare("INSERT INTO cases (title, category, company, amount, period, description, image, content, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-        $stmt->bind_param("ssssssssi", $title, $category, $company, $amount, $period, $description, $image, $content, $status);
+        $stmt = $conn->prepare("INSERT INTO cases (title, category, company, amount, period, description, image, content, status, seo_title, seo_keywords, seo_description, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+        $stmt->bind_param("ssssssssisss", $title, $category, $company, $amount, $period, $description, $image, $content, $status, $seo_title, $seo_keywords, $seo_description);
     }
 
     if (!$stmt->execute()) {

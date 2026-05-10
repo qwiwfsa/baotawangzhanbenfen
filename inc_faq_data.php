@@ -8,20 +8,23 @@ $categories = [];
 $categoriesOrder = [];
 
 // 获取分类
-$catResult = $conn->query("SELECT cat_key, cat_label, sort_order FROM faq_categories ORDER BY sort_order ASC");
+$catResult = $conn->query("SELECT cat_key, cat_label, sort_order, seo_title, seo_keywords, seo_description FROM faq_categories ORDER BY sort_order ASC");
 if ($catResult) {
     while ($row = $catResult->fetch_assoc()) {
         $categories[$row['cat_key']] = $row['cat_label'];
         $categoriesOrder[] = [
             'key' => $row['cat_key'],
             'label' => $row['cat_label'],
-            'sort_order' => (int)$row['sort_order']
+            'sort_order' => (int)$row['sort_order'],
+            'seo_title' => $row['seo_title'] ?? '',
+            'seo_keywords' => $row['seo_keywords'] ?? '',
+            'seo_description' => $row['seo_description'] ?? ''
         ];
     }
 }
 
 // 获取FAQ条目
-$faqResult = $conn->query("SELECT id, category, question, answer, sort_order FROM faq WHERE is_active = 1 ORDER BY sort_order ASC, id ASC");
+$faqResult = $conn->query("SELECT id, category, question, answer, sort_order, seo_title, seo_keywords, seo_description FROM faq WHERE is_active = 1 ORDER BY sort_order ASC, id ASC");
 if ($faqResult) {
     while ($row = $faqResult->fetch_assoc()) {
         $data[] = [
@@ -29,7 +32,10 @@ if ($faqResult) {
             'category' => $row['category'],
             'question' => $row['question'],
             'answer' => $row['answer'],
-            'sort_order' => (int)$row['sort_order']
+            'sort_order' => (int)$row['sort_order'],
+            'seo_title' => $row['seo_title'] ?? '',
+            'seo_keywords' => $row['seo_keywords'] ?? '',
+            'seo_description' => $row['seo_description'] ?? ''
         ];
     }
 }
