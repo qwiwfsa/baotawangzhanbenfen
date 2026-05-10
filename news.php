@@ -71,33 +71,6 @@ DeviceDetector::redirect();
     xhr.send();
 })();
 </script>
-<script>
-(function() {
-    var pageName = window.location.pathname.split('/').pop() || 'index.html';
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'admin/api/fetch-seo.php?page=' + pageName + '&t=' + Date.now(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                if (data && data.code === 0 && data.data) {
-                    var seo = data.data;
-                    if (seo.page_title) document.title = seo.page_title;
-                    if (seo.meta_keywords) {
-                        var kw = document.querySelector('meta[name="keywords"]');
-                        if (kw) kw.content = seo.meta_keywords;
-                    }
-                    if (seo.meta_description) {
-                        var desc = document.querySelector('meta[name="description"]');
-                        if (desc) desc.content = seo.meta_description;
-                    }
-                }
-            } catch(e) {}
-        }
-    };
-    xhr.send();
-})();
-</script>
 
     <style>
         /* 新闻分页样式 - 统一风格 */
@@ -161,24 +134,7 @@ DeviceDetector::redirect();
             font-size: 13px;
         }
 
-        /* 分类SEO信息区域 */
-        .category-seo-info {
-            padding: 0 0 8px;
-            margin-bottom: 0;
-        }
-        .category-seo-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0 0 6px;
-            line-height: 1.3;
-        }
-        .category-seo-desc {
-            font-size: 14px;
-            color: #6b7280;
-            margin: 0;
-            line-height: 1.6;
-        }
+
     </style>
 
 <script>
@@ -241,11 +197,7 @@ DeviceDetector::redirect();
                     </div>
                 </div>
 
-                <!-- 分类SEO信息（点击分类时显示） -->
-                <div class="category-seo-info" id="categorySeoInfo">
-                    <h2 class="category-seo-title" id="categorySeoTitle"></h2>
-                    <p class="category-seo-desc" id="categorySeoDesc"></p>
-                </div>
+
 
                 <!-- 精选资讯（大图展示） -->
                 <div class="editable-section" data-section="news-featured">
@@ -417,37 +369,14 @@ DeviceDetector::redirect();
             updateCategorySeo();
         }
 
-        // 更新分类SEO信息
+        // 更新分类SEO信息（仅更新meta标签，前端不显示标题/描述文字）
         function updateCategorySeo() {
-            const seoTitle = document.getElementById('categorySeoTitle');
-            const seoDesc = document.getElementById('categorySeoDesc');
-            
-            if (!seoTitle) return;
-            
             const categories = JSON.parse(localStorage.getItem('cms_categories') || '[]');
             
             if (currentCategoryId > 0) {
                 const cat = categories.find(c => parseInt(c.id) === currentCategoryId);
                 if (cat) {
-                    // SEO标题
-                    if (cat.seo_title) {
-                        seoTitle.textContent = cat.seo_title;
-                        seoTitle.style.display = 'block';
-                    } else {
-                        seoTitle.textContent = cat.name;
-                        seoTitle.style.display = 'block';
-                    }
-                    
-                    // SEO描述
-                    if (cat.seo_description) {
-                        seoDesc.textContent = cat.seo_description;
-                        seoDesc.style.display = 'block';
-                    } else {
-                        seoDesc.textContent = '';
-                        seoDesc.style.display = 'none';
-                    }
-                    
-                    // 动态更新页面标题和meta
+                    // 动态更新页面标题
                     document.title = (cat.seo_title || cat.name) + ' - 行业资讯 - Yao资金网';
                     
                     // 更新keywords
@@ -463,9 +392,7 @@ DeviceDetector::redirect();
                     }
                 }
             } else {
-                // 全部资讯 - 隐藏SEO信息
-                seoTitle.style.display = 'none';
-                seoDesc.style.display = 'none';
+                // 全部资讯 - 恢复默认标题
                 document.title = '行业资讯 - Yao资金网';
             }
         }
