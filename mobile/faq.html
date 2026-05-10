@@ -221,6 +221,43 @@
 
     <!-- 动态加载FAQ数据 -->
     <script>
+        // 默认SEO配置
+        var FAQ_DEFAULT_SEO = {
+            title: '常见问题 - Yao资金网',
+            keywords: '常见问题,亮资业务,过桥资金,摆账业务,应收账款融资,FAQ',
+            description: 'Yao资金网常见问题 - 解答您关于资金业务的常见疑问'
+        };
+
+        // 分类SEO同步
+        function syncCategorySEO(cat) {
+            if (cat === 'all') {
+                document.title = FAQ_DEFAULT_SEO.title;
+                var kw = document.querySelector('meta[name="keywords"]');
+                if (kw) kw.content = FAQ_DEFAULT_SEO.keywords;
+                var desc = document.querySelector('meta[name="description"]');
+                if (desc) desc.content = FAQ_DEFAULT_SEO.description;
+                return;
+            }
+            var seoXhr = new XMLHttpRequest();
+            seoXhr.open('GET', '../api/faq-category-seo.php?cat=' + encodeURIComponent(cat), true);
+            seoXhr.onload = function() {
+                if (seoXhr.status === 200) {
+                    try {
+                        var resp = JSON.parse(seoXhr.responseText);
+                        if (resp.code === 0 && resp.data) {
+                            var seo = resp.data;
+                            document.title = seo.seo_title + ' - Yao资金网';
+                            var kw = document.querySelector('meta[name="keywords"]');
+                            if (kw) kw.content = seo.seo_keywords;
+                            var desc = document.querySelector('meta[name="description"]');
+                            if (desc) desc.content = seo.seo_description;
+                        }
+                    } catch(e) {}
+                }
+            };
+            seoXhr.send();
+        }
+
         // 从数据库API加载FAQ数据
         (async function() {
             try {
@@ -312,6 +349,8 @@
                             cat.style.display = 'none';
                         }
                     });
+                    // SEO同步
+                    syncCategorySEO(category);
                 }
 
                 // 按分类分组
@@ -386,7 +425,7 @@
         }
     </script>
     <script>
-        // FAQ分类切换
+        // FAQ分类切换（动画+SEO同步）
         document.addEventListener('DOMContentLoaded', function() {
             const categoryItems = document.querySelectorAll('.faq-category-item');
             const faqCategories = document.querySelectorAll('.faq-custom-category');
@@ -425,6 +464,8 @@
                             }
                         });
                     }
+                    // SEO同步
+                    syncCategorySEO(category);
                 });
             });
         });

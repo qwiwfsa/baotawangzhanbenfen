@@ -79,42 +79,18 @@ $conn->close();
             try {
                 var data = JSON.parse(xhr.responseText);
                 if (data && data.code === 0 && data.data) {
-                    var seo = data.data;
-                    if (seo.page_title) document.title = seo.page_title;
-                    if (seo.meta_keywords) {
-                        var kw = document.querySelector('meta[name="keywords"]');
-                        if (kw) kw.content = seo.meta_keywords;
-                    }
-                    if (seo.meta_description) {
-                        var desc = document.querySelector('meta[name="description"]');
-                        if (desc) desc.content = seo.meta_description;
-                    }
-                }
-            } catch(e) {}
-        }
-    };
-    xhr.send();
-})();
-</script>
-<script>
-(function() {
-    var pageName = window.location.pathname.split('/').pop() || 'index.html';
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'admin/api/fetch-seo.php?page=' + pageName + '&t=' + Date.now(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                if (data && data.code === 0 && data.data) {
-                    var seo = data.data;
-                    if (seo.page_title) document.title = seo.page_title;
-                    if (seo.meta_keywords) {
-                        var kw = document.querySelector('meta[name="keywords"]');
-                        if (kw) kw.content = seo.meta_keywords;
-                    }
-                    if (seo.meta_description) {
-                        var desc = document.querySelector('meta[name="description"]');
-                        if (desc) desc.content = seo.meta_description;
+                    // 有分类参数时不覆盖，保留PHP设置的分类SEO
+                    if (!new URLSearchParams(window.location.search).has('cat')) {
+                        var seo = data.data;
+                        if (seo.page_title) document.title = seo.page_title;
+                        if (seo.meta_keywords) {
+                            var kw = document.querySelector('meta[name="keywords"]');
+                            if (kw) kw.content = seo.meta_keywords;
+                        }
+                        if (seo.meta_description) {
+                            var desc = document.querySelector('meta[name="description"]');
+                            if (desc) desc.content = seo.meta_description;
+                        }
                     }
                 }
             } catch(e) {}
@@ -276,12 +252,49 @@ if ('caches' in window) {
                 var catItems = document.querySelectorAll('.faq-category-item');
                 for (var ci = 0; ci < catItems.length; ci++) {
                     catItems[ci].addEventListener('click', function() {
+                        var cat = this.dataset.category;
                         var items = document.querySelectorAll('.faq-category-item');
                         for (var i2 = 0; i2 < items.length; i2++) items[i2].classList.remove('active');
                         this.classList.add('active');
                         var cats = document.querySelectorAll('.faq-custom-category');
                         for (var c2 = 0; c2 < cats.length; c2++) {
-                            cats[c2].style.display = (this.dataset.category === 'all' || cats[c2].dataset.category === this.dataset.category) ? 'block' : 'none';
+                            cats[c2].style.display = (cat === 'all' || cats[c2].dataset.category === cat) ? 'block' : 'none';
+                        }
+                        // 更新浏览器URL（不刷新页面）
+                        var url = new URL(window.location.href);
+                        if (cat === 'all') {
+                            url.searchParams.delete('cat');
+                        } else {
+                            url.searchParams.set('cat', cat);
+                        }
+                        history.pushState({}, '', url.toString());
+                        // 异步获取分类SEO并更新页面meta标签
+                        if (cat !== 'all') {
+                            var seoXhr = new XMLHttpRequest();
+                            seoXhr.open('GET', 'api/faq-category-seo.php?cat=' + encodeURIComponent(cat), true);
+                            seoXhr.onload = function() {
+                                if (seoXhr.status === 200) {
+                                    try {
+                                        var resp = JSON.parse(seoXhr.responseText);
+                                        if (resp.code === 0 && resp.data) {
+                                            var seo = resp.data;
+                                            document.title = seo.seo_title + ' - Yao资金网';
+                                            var kw = document.querySelector('meta[name="keywords"]');
+                                            if (kw) kw.content = seo.seo_keywords;
+                                            var desc = document.querySelector('meta[name="description"]');
+                                            if (desc) desc.content = seo.seo_description;
+                                        }
+                                    } catch(e) {}
+                                }
+                            };
+                            seoXhr.send();
+                        } else {
+                            // 全部问题：恢复默认SEO
+                            document.title = '常见问题 - Yao资金网';
+                            var kw = document.querySelector('meta[name="keywords"]');
+                            if (kw) kw.content = '常见问题,亮资业务,过桥资金,摆账业务,云信融资出表,FAQ';
+                            var desc = document.querySelector('meta[name="description"]');
+                            if (desc) desc.content = 'Yao资金网常见问题 - 解答您关于资金业务的常见疑问';
                         }
                     });
                 }
