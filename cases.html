@@ -324,6 +324,42 @@
             }
         });
 
+        // 存储页面原始SEO值
+        let originalSEO = {
+            title: document.title,
+            keywords: '',
+            description: ''
+        };
+        (function() {
+            const kw = document.querySelector('meta[name="keywords"]');
+            const desc = document.querySelector('meta[name="description"]');
+            if (kw) originalSEO.keywords = kw.content;
+            if (desc) originalSEO.description = desc.content;
+        })();
+
+        // 根据业务类型更新SEO meta标签
+        function updateSEOMeta(typeName) {
+            if (typeName === 'all') {
+                document.title = originalSEO.title;
+                const kw = document.querySelector('meta[name="keywords"]');
+                const desc = document.querySelector('meta[name="description"]');
+                if (kw) kw.content = originalSEO.keywords;
+                if (desc) desc.content = originalSEO.description;
+                return;
+            }
+            const typeData = caseTypes.find(t => t.name === typeName);
+            if (!typeData) return;
+            if (typeData.meta_title) document.title = typeData.meta_title;
+            if (typeData.meta_keywords) {
+                const kw = document.querySelector('meta[name="keywords"]');
+                if (kw) kw.content = typeData.meta_keywords;
+            }
+            if (typeData.meta_description) {
+                const desc = document.querySelector('meta[name="description"]');
+                if (desc) desc.content = typeData.meta_description;
+            }
+        }
+
         // 设置筛选事件
         function setupFilters() {
             const typeButtons = document.querySelectorAll('#typeFilter .filter-btn');
@@ -333,6 +369,7 @@
                     typeButtons.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     currentFilters.type = this.dataset.filter;
+                    updateSEOMeta(currentFilters.type);
                     filterCases();
                 });
             });
@@ -682,6 +719,32 @@
             console.log('[Cases] 准备渲染案例...');
             renderCasesPage();
             renderPagination();
+            
+            // 检查URL参数，自动应用类型筛选和SEO
+            applyUrlTypeFilter();
+        }
+
+        // 根据URL参数?type=XXX 自动应用筛选和SEO
+        function applyUrlTypeFilter() {
+            const params = new URLSearchParams(window.location.search);
+            const typeParam = params.get('type');
+            if (!typeParam) return;
+            
+            // 查找匹配的筛选按钮
+            const buttons = document.querySelectorAll('#typeFilter .filter-btn');
+            let targetBtn = null;
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === typeParam) {
+                    targetBtn = btn;
+                }
+            });
+            if (targetBtn) {
+                buttons.forEach(b => b.classList.remove('active'));
+                targetBtn.classList.add('active');
+                currentFilters.type = typeParam;
+                updateSEOMeta(typeParam);
+                filterCases();
+            }
         }
 
         // 初始化

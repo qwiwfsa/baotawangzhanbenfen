@@ -34,12 +34,12 @@ $jsonFile = __DIR__ . '/../../data/case-types.json';
 
 // 默认业务类型数据
 $defaultTypes = [
-    ['id' => 1, 'name' => '过桥', 'description' => '企业短期资金周转过桥服务', 'color' => '#3b82f6', 'sort_order' => 1],
-    ['id' => 2, 'name' => '摆账', 'description' => '企业摆账、显账服务', 'color' => '#10b981', 'sort_order' => 2],
-    ['id' => 3, 'name' => '亮资', 'description' => '企业亮资、资金证明服务', 'color' => '#f59e0b', 'sort_order' => 3],
-    ['id' => 4, 'name' => '冲量', 'description' => '银行存款冲量服务', 'color' => '#ef4444', 'sort_order' => 4],
-    ['id' => 5, 'name' => '定增', 'description' => '上市公司定向增发服务', 'color' => '#8b5cf6', 'sort_order' => 5],
-    ['id' => 6, 'name' => '应收账款', 'description' => '应收账款融资服务', 'color' => '#06b6d4', 'sort_order' => 6]
+    ['id' => 1, 'name' => '过桥', 'description' => '企业短期资金周转过桥服务', 'color' => '#3b82f6', 'sort_order' => 1, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => ''],
+    ['id' => 2, 'name' => '摆账', 'description' => '企业摆账、显账服务', 'color' => '#10b981', 'sort_order' => 2, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => ''],
+    ['id' => 3, 'name' => '亮资', 'description' => '企业亮资、资金证明服务', 'color' => '#f59e0b', 'sort_order' => 3, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => ''],
+    ['id' => 4, 'name' => '冲量', 'description' => '银行存款冲量服务', 'color' => '#ef4444', 'sort_order' => 4, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => ''],
+    ['id' => 5, 'name' => '定增', 'description' => '上市公司定向增发服务', 'color' => '#8b5cf6', 'sort_order' => 5, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => ''],
+    ['id' => 6, 'name' => '应收账款', 'description' => '应收账款融资服务', 'color' => '#06b6d4', 'sort_order' => 6, 'meta_title' => '', 'meta_keywords' => '', 'meta_description' => '']
 ];
 
 // 记录错误日志
@@ -211,6 +211,9 @@ try {
             $name = trim($data['name']);
             $description = isset($data['description']) ? trim($data['description']) : '';
             $color = isset($data['color']) ? trim($data['color']) : '#3b82f6';
+            $meta_title = isset($data['meta_title']) ? trim($data['meta_title']) : '';
+            $meta_keywords = isset($data['meta_keywords']) ? trim($data['meta_keywords']) : '';
+            $meta_description = isset($data['meta_description']) ? trim($data['meta_description']) : '';
             
             // 检查名称是否已存在
             foreach ($types as $type) {
@@ -234,7 +237,10 @@ try {
                 'name' => $name,
                 'description' => $description,
                 'color' => $color,
-                'sort_order' => $maxOrder + 1
+                'sort_order' => $maxOrder + 1,
+                'meta_title' => $meta_title,
+                'meta_keywords' => $meta_keywords,
+                'meta_description' => $meta_description
             ];
             
             $types[] = $newType;
@@ -265,6 +271,9 @@ try {
             $name = isset($data['name']) ? trim($data['name']) : '';
             $description = isset($data['description']) ? trim($data['description']) : '';
             $color = isset($data['color']) ? trim($data['color']) : '#3b82f6';
+            $meta_title = isset($data['meta_title']) ? trim($data['meta_title']) : null;
+            $meta_keywords = isset($data['meta_keywords']) ? trim($data['meta_keywords']) : null;
+            $meta_description = isset($data['meta_description']) ? trim($data['meta_description']) : null;
             $sort_order = isset($data['sort_order']) ? intval($data['sort_order']) : null;
             
             // 只传了sort_order时（排序操作），不校验name
@@ -296,6 +305,9 @@ try {
                         $type['name'] = $name;
                         $type['description'] = $description;
                         $type['color'] = $color;
+                        if ($meta_title !== null) $type['meta_title'] = $meta_title;
+                        if ($meta_keywords !== null) $type['meta_keywords'] = $meta_keywords;
+                        if ($meta_description !== null) $type['meta_description'] = $meta_description;
                     }
                     if ($sort_order !== null) {
                         $type['sort_order'] = $sort_order;

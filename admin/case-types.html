@@ -401,6 +401,24 @@
                 <label>颜色标识</label>
                 <input type="color" id="typeColor" value="#3b82f6">
             </div>
+            <!-- SEO设置 -->
+            <div style="margin-top: 18px; padding-top: 18px; border-top: 1px solid #e5e7eb;">
+                <div style="font-size: 14px; font-weight: 600; color: #3b82f6; margin-bottom: 12px;">
+                    🔍 SEO设置 <span style="font-weight: 400; color: #9ca3af; font-size: 12px;">(选填)</span>
+                </div>
+                <div class="form-group">
+                    <label>SEO标题</label>
+                    <input type="text" id="typeMetaTitle" placeholder="留空则使用类型名称" maxlength="120">
+                </div>
+                <div class="form-group">
+                    <label>SEO关键词</label>
+                    <input type="text" id="typeMetaKeywords" placeholder="逗号分隔多个关键词" maxlength="300">
+                </div>
+                <div class="form-group">
+                    <label>SEO描述</label>
+                    <textarea id="typeMetaDescription" rows="2" placeholder="页面简介，建议120字内" maxlength="300"></textarea>
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal()">取消</button>
@@ -463,6 +481,7 @@
                 <span class="type-color-dot" style="background:${type.color || '#3b82f6'}"></span>
                 <span class="type-name">${type.name}</span>
                 <span class="type-desc">${type.description || ''}</span>
+                ${(type.meta_title || type.meta_keywords || type.meta_description) ? '<span style="flex-shrink:0;font-size:11px;color:#10b981;background:#ecfdf5;padding:2px 8px;border-radius:4px;" title="已设置SEO"><i class="fas fa-search"></i> SEO</span>' : ''}
                 <div class="type-actions">
                     <button class="btn-edit" onclick="editType(${type.id})"><i class="fas fa-edit"></i> 编辑</button>
                     <button class="btn-delete" onclick="deleteType(${type.id})"><i class="fas fa-trash"></i> 删除</button>
@@ -511,6 +530,9 @@
         document.getElementById('typeName').value = '';
         document.getElementById('typeDesc').value = '';
         document.getElementById('typeColor').value = '#3b82f6';
+        document.getElementById('typeMetaTitle').value = '';
+        document.getElementById('typeMetaKeywords').value = '';
+        document.getElementById('typeMetaDescription').value = '';
         document.getElementById('typeModal').classList.add('active');
         setTimeout(() => document.getElementById('typeName').focus(), 100);
     }
@@ -524,6 +546,9 @@
         document.getElementById('typeName').value = type.name;
         document.getElementById('typeDesc').value = type.description || '';
         document.getElementById('typeColor').value = type.color || '#3b82f6';
+        document.getElementById('typeMetaTitle').value = type.meta_title || '';
+        document.getElementById('typeMetaKeywords').value = type.meta_keywords || '';
+        document.getElementById('typeMetaDescription').value = type.meta_description || '';
         document.getElementById('typeModal').classList.add('active');
         setTimeout(() => document.getElementById('typeName').focus(), 100);
     }
@@ -542,8 +567,8 @@
         try {
             const method = editingId ? 'PUT' : 'POST';
             const body = editingId
-                ? { id: editingId, name, description: document.getElementById('typeDesc').value.trim(), color: document.getElementById('typeColor').value }
-                : { name, description: document.getElementById('typeDesc').value.trim(), color: document.getElementById('typeColor').value };
+                ? { id: editingId, name, description: document.getElementById('typeDesc').value.trim(), color: document.getElementById('typeColor').value, meta_title: document.getElementById('typeMetaTitle').value.trim(), meta_keywords: document.getElementById('typeMetaKeywords').value.trim(), meta_description: document.getElementById('typeMetaDescription').value.trim() }
+                : { name, description: document.getElementById('typeDesc').value.trim(), color: document.getElementById('typeColor').value, meta_title: document.getElementById('typeMetaTitle').value.trim(), meta_keywords: document.getElementById('typeMetaKeywords').value.trim(), meta_description: document.getElementById('typeMetaDescription').value.trim() };
 
             const res = await fetch(PHP_API_BASE + 'types.php', {
                 method,

@@ -1371,6 +1371,14 @@
                         <label class="form-label">标识颜色</label>
                         <input type="color" class="form-color" id="typeColor" value="#3b82f6">
                     </div>
+                    <div class="form-group" style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                        <label class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                            🔍 SEO设置 <span style="font-size: 12px; color: #94a3b8; font-weight: normal;">(选填)</span>
+                        </label>
+                        <input type="text" class="form-input" id="typeMetaTitle" placeholder="SEO标题" style="margin-bottom: 10px;">
+                        <input type="text" class="form-input" id="typeMetaKeywords" placeholder="SEO关键词(逗号分隔)" style="margin-bottom: 10px;">
+                        <textarea class="form-textarea" id="typeMetaDescription" placeholder="SEO描述"></textarea>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -2077,6 +2085,9 @@
             document.getElementById('typeName').value = '';
             document.getElementById('typeDescription').value = '';
             document.getElementById('typeColor').value = '#3b82f6';
+            document.getElementById('typeMetaTitle').value = '';
+            document.getElementById('typeMetaKeywords').value = '';
+            document.getElementById('typeMetaDescription').value = '';
             document.getElementById('typeFormTitle').textContent = '新增业务类型';
             document.getElementById('typeFormModal').classList.add('show');
             setTimeout(() => document.getElementById('typeName').focus(), 100);
@@ -2097,6 +2108,9 @@
             document.getElementById('typeName').value = type.name || '';
             document.getElementById('typeDescription').value = type.description || '';
             document.getElementById('typeColor').value = type.color || '#3b82f6';
+            document.getElementById('typeMetaTitle').value = type.meta_title || '';
+            document.getElementById('typeMetaKeywords').value = type.meta_keywords || '';
+            document.getElementById('typeMetaDescription').value = type.meta_description || '';
             document.getElementById('typeFormTitle').textContent = '编辑业务类型';
             document.getElementById('typeFormModal').classList.add('show');
             setTimeout(() => document.getElementById('typeName').focus(), 100);
@@ -2113,9 +2127,12 @@
             try {
                 const typeId = document.getElementById('typeId').value;
                 const method = typeId ? 'PUT' : 'POST';
+                const metaTitle = document.getElementById('typeMetaTitle').value.trim();
+                const metaKeywords = document.getElementById('typeMetaKeywords').value.trim();
+                const metaDescription = document.getElementById('typeMetaDescription').value.trim();
                 const body = typeId
-                    ? { id: typeId, name: name, description: document.getElementById('typeDescription').value.trim(), color: document.getElementById('typeColor').value }
-                    : { name: name, description: document.getElementById('typeDescription').value.trim(), color: document.getElementById('typeColor').value };
+                    ? { id: typeId, name: name, description: document.getElementById('typeDescription').value.trim(), color: document.getElementById('typeColor').value, meta_title: metaTitle, meta_keywords: metaKeywords, meta_description: metaDescription }
+                    : { name: name, description: document.getElementById('typeDescription').value.trim(), color: document.getElementById('typeColor').value, meta_title: metaTitle, meta_keywords: metaKeywords, meta_description: metaDescription };
 
                 const res = await fetch(PHP_API_BASE + 'types.php', {
                     method: method,
