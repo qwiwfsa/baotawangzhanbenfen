@@ -180,5 +180,35 @@
         "status": "published",
         "summary": "提供企业资金证明摆账服务",
         "lastModified": "2026-05-06 06:16:22"
+    },
+    {
+        "id": "1778393602079",
+        "title": "测试",
+        "type": "云信融资出表",
+        "city": "",
+        "amount": "",
+        "image": "uploads\/20260510_6a00220409ce5.jpg",
+        "coverImage": "uploads\/20260510_6a00220409ce5.jpg",
+        "images": [
+            "uploads\/20260510_6a00220409ce5.jpg"
+        ],
+        "status": "published",
+        "summary": "",
+        "lastModified": "2026-05-10 08:13:35"
+    },
+    {
+        "id": "1778393594849",
+        "title": "是",
+        "type": "云信融资出表",
+        "city": "",
+        "amount": "8亿元",
+        "image": "uploads\/20260510_6a0021fe7de25.jpg",
+        "coverImage": "uploads\/20260510_6a0021fe7de25.jpg",
+        "images": [
+            "uploads\/20260510_6a0021fe7de25.jpg"
+        ],
+        "status": "published",
+        "summary": "",
+        "lastModified": "2026-05-10 08:13:35"
     }
 ]

@@ -21,13 +21,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 16px;
+    font-size: 13px;
     color: #fff;
 }
 
@@ -75,40 +75,46 @@
     font-size: 14px;
 }
 
-/* 文章详情页分享栏（完整版） */
+/* 文章详情页分享栏 */
 .article-share-full {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    background: #f8fafc;
+    padding: 24px 0 0;
+    background: transparent;
     border-radius: 12px;
-    margin: 30px auto;
-    max-width: 600px;
+    margin: 40px auto 0;
+    max-width: 500px;
+    border-top: 1px solid #e5e7eb;
 }
 
 .article-share-full .share-left {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 6px;
 }
 
 .article-share-full .share-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1f2937;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    white-space: nowrap;
 }
 
 .article-share-full .share-buttons {
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
 
 .article-share-full .share-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+}
+
+.article-share-full .share-btn-label {
+    display: none;
 }
 
 /* 微信分享弹窗 */
@@ -223,21 +229,25 @@
     
     .article-share-full {
         flex-direction: column;
-        gap: 16px;
-        padding: 16px;
-        margin: 20px auto;
+        gap: 10px;
+        padding: 20px 0 0;
+        margin: 30px auto 0;
     }
-
+    
     .article-share-full .share-left {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
         justify-content: center;
+        gap: 5px;
+    }
+    
+    .article-share-full .share-title {
+        font-size: 11px;
     }
     
     .article-share-full .share-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
     }
     
     .wechat-share-content {
