@@ -1588,10 +1588,19 @@
 
                 // 处理图片路径 - 支持多种路径格式
                 let imageUrl = coverImage;
-                if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && !imageUrl.startsWith('/')) {
-                    // 相对路径,添加前缀
-                    imageUrl = '../' + imageUrl;
+                if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
+                    // 如果路径以 / 开头，表示绝对路径，需要转换为相对路径
+                    if (imageUrl.startsWith('/')) {
+                        imageUrl = imageUrl.substring(1);
+                    }
+                    // 确保路径以 ../ 开头（从 admin/ 目录访问到项目根目录）
+                    // 注意：uploads/xxx 路径也需要转为 ../uploads/xxx
+                    if (!imageUrl.startsWith('../')) {
+                        imageUrl = '../' + imageUrl;
+                    }
                 }
+                
+                console.log('[DEBUG] 案例图片:', caseItem.id, '原始路径:', coverImage, '处理后:', imageUrl);
 
                 return `
                     <div class="case-card" data-id="${caseItem.id}">
@@ -2052,7 +2061,8 @@
             select.innerHTML = '<option value="">全部</option>';
             (caseTypes || []).forEach(type => {
                 const opt = document.createElement('option');
-                opt.value = type.id;
+                // 使用分类名称作为value，因为案例数据中的type字段是名称
+                opt.value = type.name;
                 opt.textContent = type.name;
                 select.appendChild(opt);
             });
@@ -2429,28 +2439,42 @@
         // 加载分类选项
         async function loadCategoryOptions() {
             try {
-                const response = await fetch('api/case-types.php');
+                console.log('[DEBUG] 开始加载业务类型列表...');
+                const response = await fetch(PHP_API_BASE + 'types.php');
+                console.log('[DEBUG] API响应状态:', response.status);
                 const result = await response.json();
+                console.log('[DEBUG] API返回数据:', result);
+                
                 const select = document.getElementById('batchCategorySelect');
                 select.innerHTML = '<option value="">请选择分类</option>';
+                
+                let types = [];
                 if (result.success && result.data) {
-                    result.data.forEach(type => {
-                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
-                    });
+                    types = result.data;
                 } else if (result.types) {
-                    result.types.forEach(type => {
-                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
-                    });
+                    types = result.types;
                 }
+                
+                console.log('[DEBUG] 找到业务类型数量:', types.length);
+                
+                types.forEach(type => {
+                    console.log('[DEBUG] 添加业务类型:', type.id, type.name);
+                    select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
+                });
+                
+                console.log('[DEBUG] 业务类型列表加载完成');
             } catch (error) {
-                console.error('加载分类失败:', error);
+                console.error('[ERROR] 加载分类失败:', error);
+                alert('加载分类列表失败: ' + error.message);
             }
         }
 
         // 确认批量修改分类
         async function confirmBatchCategory() {
             const selectedIds = getSelectedCaseIds();
-            const categoryId = document.getElementById('batchCategorySelect').value;
+            const categorySelect = document.getElementById('batchCategorySelect');
+            const categoryId = categorySelect.value;
+            const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
             
             if (selectedIds.length === 0) {
                 showToast('请先选择要修改分类的案例', 'error');
@@ -2472,13 +2496,26 @@
             // 逐个修改分类
             for (const caseId of selectedIds) {
                 try {
+                    // 获取当前案例数据以保留所有字段
+                    const caseItem = allCases.find(c => String(c.id) === String(caseId));
+                    if (!caseItem) {
+                        console.error('找不到案例:', caseId);
+                        failCount++;
+                        continue;
+                    }
+                    
+                    // 构建完整的案例数据，只修改分类
+                    const updateData = {
+                        ...caseItem,
+                        id: caseId,
+                        type: categoryName,
+                        status: caseItem.status || 'draft'
+                    };
+                    
                     const response = await fetch('api/case/save.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            id: caseId,
-                            type_id: categoryId
-                        })
+                        body: JSON.stringify(updateData)
                     });
                     const result = await response.json();
                     if (result.success) {
@@ -2502,6 +2539,8 @@
                 showToast('修改失败,请检查网络连接', 'error');
             }
 
+            // 强制刷新业务类型缓存，确保筛选下拉显示最新分类
+            await loadCaseTypes(true, true);
             clearSelection();
             await loadCases();
         }

@@ -828,7 +828,7 @@
         async function loadCategoryOptions() {
             try {
                 console.log('[DEBUG] 开始加载分类列表...');
-                const response = await fetch('../../api/categories.php');
+                const response = await fetch('../../../api/categories.php');
                 console.log('[DEBUG] API响应状态:', response.status);
                 const result = await response.json();
                 console.log('[DEBUG] API返回数据:', result);
@@ -837,10 +837,10 @@
                 select.innerHTML = '<option value="">请选择分类</option>';
                 
                 let categories = [];
-                if (result.success && result.data) {
-                    categories = result.data;
-                } else if (result.categories) {
+                if (result.success && result.categories) {
                     categories = result.categories;
+                } else if (result.data) {
+                    categories = result.data;
                 }
                 
                 console.log('[DEBUG] 找到分类数量:', categories.length);
