@@ -1,6 +1,6 @@
 const fs = require('fs');
 const files = ['cases.html','case-detail.html','contact.html','services.html','advantages.html','faq.html'];
-const base = 'D:/yingyong/xampp/htdocs/hongdu/';
+const base = 'D:/yingyong/xampp/htdocs/';
 
 for (const f of files) {
   const content = fs.readFileSync(base + f, 'utf8');

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -198,11 +198,11 @@
             // 根据当前设备视图加载不同目录的页面
             let pagePath = '';
             if (currentDevice === 'mobile') {
-                pagePath = '/hongdu/mobile/' + pageUrl;
+                pagePath = '/mobile/' + pageUrl;
             } else if (currentDevice === 'tablet') {
-                pagePath = '/hongdu/tablet/' + pageUrl;
+                pagePath = '/tablet/' + pageUrl;
             } else {
-                pagePath = '/hongdu/' + pageUrl;
+                pagePath = '/' + pageUrl;
             }
 
             console.log('加载页面:', pagePath, '设备:', currentDevice);
@@ -515,11 +515,11 @@
             // 根据当前设备打开对应的页面
             let previewPath = '';
             if (currentDevice === 'mobile') {
-                previewPath = '/hongdu/mobile/' + currentPage;
+                previewPath = '/mobile/' + currentPage;
             } else if (currentDevice === 'tablet') {
-                previewPath = '/hongdu/tablet/' + currentPage;
+                previewPath = '/tablet/' + currentPage;
             } else {
-                previewPath = '/hongdu/' + currentPage;
+                previewPath = '/' + currentPage;
             }
 
             window.open(previewPath, '_blank');
@@ -562,11 +562,11 @@
             // 根据当前设备选择不同的保存API
             let saveApi = '';
             if (currentDevice === 'mobile') {
-                saveApi = '/hongdu/admin/api/page-builder/save-mobile-page.php';
+                saveApi = 'api/page-builder/save-mobile-page.php';
             } else if (currentDevice === 'tablet') {
-                saveApi = '/hongdu/admin/api/page-builder/save-tablet-page.php';
+                saveApi = 'api/page-builder/save-tablet-page.php';
             } else {
-                saveApi = '/hongdu/admin/api/page-builder/save-page.php';
+                saveApi = 'api/page-builder/save-page.php';
             }
 
             // 先保存HTML文件

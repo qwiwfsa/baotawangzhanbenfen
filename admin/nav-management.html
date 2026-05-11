@@ -1,4 +1,4 @@
-﻿﻿﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -232,7 +232,7 @@
 
         // 加载菜单
         function loadNavItems() {
-            fetch('/hongdu/admin/api/nav-save.php?type=nav')
+            fetch('api/nav-save.php?type=nav')
                 .then(res => res.json())
                 .then(result => {
                     if (result.code === 0 && result.data) {
@@ -322,7 +322,7 @@
                 icon: item.icon || ''
             }));
 
-            fetch('/hongdu/admin/api/nav-save.php', {
+            fetch('api/nav-save.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -376,7 +376,7 @@
                 icon: icon
             };
 
-            fetch('/hongdu/admin/api/nav-save.php', {
+            fetch('api/nav-save.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -400,7 +400,7 @@
         function deleteNav(id) {
             if (!window.confirm('确定要删除这个菜单项吗?')) return;
 
-            fetch('/hongdu/admin/api/nav-save.php', {
+            fetch('api/nav-save.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -505,7 +505,7 @@
 
         // 加载组件
         function loadComponents() {
-            fetch('/hongdu/admin/api/nav-save.php?type=component')
+            fetch('api/nav-save.php?type=component')
                 .then(res => res.json())
                 .then(result => {
                     if (result.code === 0 && result.data) {
@@ -599,7 +599,7 @@
                 html: compHtml
             };
 
-            fetch('/hongdu/admin/api/nav-save.php', {
+            fetch('api/nav-save.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -623,7 +623,7 @@
         function deleteComponent(id) {
             if (!confirm('确定要删除这个组件吗？')) return;
 
-            fetch('/hongdu/admin/api/nav-save.php', {
+            fetch('api/nav-save.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

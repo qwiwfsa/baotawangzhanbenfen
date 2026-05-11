@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const base = 'D:/yingyong/xampp/htdocs/hongdu/';
+const base = 'D:/yingyong/xampp/htdocs/';
 
 /**
  * Extract footer and its trailing scripts for each file,

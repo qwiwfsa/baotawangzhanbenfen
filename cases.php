@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/device-detect.php';
 DeviceDetector::redirect();
 ?>
@@ -363,7 +363,7 @@ DeviceDetector::redirect();
             const end = start + itemsPerPage;
             const pageCases = filteredCases.slice(start, end);
             
-            // 获取基础路径（如 /hongdu/）
+            // 获取基础路径（如 /）
             const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
             
             // 辅助函数：将相对路径解析为正确URL

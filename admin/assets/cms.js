@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CMS数据集成脚本
  * 从JSON数据文件加载内容并应用到页面
  */
@@ -19,7 +19,7 @@
 
         try {
             // 从数据库API加载最新数据
-            const CMS_BASE = '/hongdu/admin/';
+            const CMS_BASE = '';
             const response = await fetch(CMS_BASE + `api/load.php?page=${pageId}&t=${Date.now()}`);
             if (response.ok) {
                 const result = await response.json();
@@ -129,7 +129,7 @@
     // 加载页脚数据
     async function loadFooter() {
         try {
-            const resp = await fetch('/hongdu/admin/api/footer-data.php');
+            const resp = await fetch('api/footer-data.php');
             const result = await resp.json();
             if (result.code !== 0 || !result.grouped) return;
             const g = result.grouped;

@@ -320,7 +320,7 @@ DeviceDetector::redirect();
     <script>
         // 妗堜緥鏁版嵁 - 灏嗕粠CMS鏁版嵁婧愬姩鎬佸姞杞?
         let casesData = [];
-        // 鍏ㄥ眬鍩虹璺緞锛堝 /hongdu/锛?
+        // 鍏ㄥ眬鍩虹璺緞锛堝 /锛?
         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 
         // 鑾峰彇绫诲瀷鏍峰紡绫诲悕

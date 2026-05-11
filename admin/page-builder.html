@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.css">
     <!-- 引入前端网站样式 -->
-    <link rel="stylesheet" href="/hongdu/css/style.css">
-    <link rel="stylesheet" href="/hongdu/assets/css/page-builder.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/assets/css/page-builder.css">
     <style>
         * {
             margin: 0;
@@ -890,8 +890,8 @@
             let html = data.html || '<div>自定义HTML内容</div>';
 
             // 修复相对路径的图片
-            html = html.replace(/src="(?!http|\/\/|\/hongdu)/g, 'src="/hongdu/');
-            html = html.replace(/href="(?!http|\/\/|\/hongdu|#|javascript)/g, 'href="/hongdu/');
+            html = html.replace(/src="(?!http|\/\/|\/)/g, 'src="/');
+            html = html.replace(/href="(?!http|\/\/|\/|#|javascript)/g, 'href="/');
 
             // 包装在一个容器中，保持样式隔离
             return `<div class="custom-html-wrapper">${html}</div>`;
@@ -1173,7 +1173,7 @@
             document.getElementById('importBtn').style.display = 'flex';
 
             // 先尝试从数据库加载模块
-            fetch(`/hongdu/admin/api/page-builder/get-modules.php?page_id=${pageId}`)
+            fetch(`api/page-builder/get-modules.php?page_id=${pageId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.code === 0 && data.data.modules.length > 0) {
@@ -1207,7 +1207,7 @@
 
         // 加载现有页面HTML内容
         function loadExistingPageHTML(pageId) {
-            fetch(`/hongdu/admin/api/page-builder/parse-page.php?page_id=${pageId}`)
+            fetch(`api/page-builder/parse-page.php?page_id=${pageId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.code === 0 && data.data.modules && data.data.modules.length > 0) {
@@ -1268,7 +1268,7 @@
 
             // 保存所有模块
             const promises = modules.map((module, index) => {
-                return fetch('/hongdu/admin/api/page-builder/save-module.php', {
+                return fetch('api/page-builder/save-module.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1312,7 +1312,7 @@
             }
 
             if (confirm('确定要发布这个页面吗？发布后将生成静态HTML文件。')) {
-                fetch('/hongdu/admin/api/page-builder/publish.php', {
+                fetch('api/page-builder/publish.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1401,8 +1401,8 @@
         }
     </script>
     <!-- 引入前端JS以支持轮播等功能 -->
-    <script src="/hongdu/js/main.js"></script>
-    <script src="/hongdu/assets/js/page-builder.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/assets/js/page-builder.js"></script>
 </body>
 </html>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -1142,7 +1142,7 @@
             const htmlContent = iframeDoc.documentElement.outerHTML;
 
             // 保存到服务器
-            fetch('/hongdu/admin/api/page-builder/save-page.php', {
+            fetch('api/page-builder/save-page.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

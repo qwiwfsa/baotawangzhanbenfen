@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const baseDir = 'D:/yingyong/xampp/htdocs/hongdu/';
+const baseDir = 'D:/yingyong/xampp/htdocs/';
 
 // File-specific footer replacements: [file, oldFooter, newFooter]
 const replacements = [];
@@ -15,10 +15,10 @@ const casesFooterOld = `<footer class="footer">
                     <p class="footer-desc">专业资金业务服务商，提供上市公司过桥、企业摆账、银行存款、应收账款融资等全方位资金服务</p>
                 </div>
                 <div class="footer-nav" data-footer-group="quick_links">                   <h4 class="footer-nav-title">快速链接</h4>
-                    <ul class="footer-nav-list"><li><a href="http://localhost/hongdu/index.html">首页</a></li><li><a href="http://localhost/hongdu/services.html">业务范围</a></li><li><a href="http://localhost/hongdu/cases.html">成功案例</a></li><li><a href="http://localhost/hongdu/advantages.html">服务优势</a></li></ul>
+                    <ul class="footer-nav-list"><li><a href="http://localhost/index.html">首页</a></li><li><a href="http://localhost/services.html">业务范围</a></li><li><a href="http://localhost/cases.html">成功案例</a></li><li><a href="http://localhost/advantages.html">服务优势</a></li></ul>
                 </div>
                 <div class="footer-nav" data-footer-group="service_links">                   <h4 class="footer-nav-title">更多内容</h4>
-                    <ul class="footer-nav-list"><li><a href="http://localhost/hongdu/news.html">行业资讯</a></li><li><a href="http://localhost/hongdu/faq.html">常见问题</a></li><li><a href="http://localhost/hongdu/contact.html">联系我们</a></li></ul>
+                    <ul class="footer-nav-list"><li><a href="http://localhost/news.html">行业资讯</a></li><li><a href="http://localhost/faq.html">常见问题</a></li><li><a href="http://localhost/contact.html">联系我们</a></li></ul>
                 </div>
                 <div class="footer-nav" data-footer-group="contact">                   <h4 class="footer-nav-title">联系方式</h4>
                     <ul class="footer-nav-list"><li><i class="fas fa-user"></i> 王总</li><li><i class="fas fa-phone"></i> 13552883008 </li><li><i class="fas fa-envelope"></i> wanglizhongguo@126.com</li></ul>

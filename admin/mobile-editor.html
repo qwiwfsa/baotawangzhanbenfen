@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -147,7 +147,7 @@
             const iframe = document.getElementById('pageIframe');
 
             // 加载mobile目录下的页面
-            iframe.src = '/hongdu/mobile/' + pageUrl;
+            iframe.src = '/mobile/' + pageUrl;
 
             iframe.onload = function() {
                 try {
@@ -382,7 +382,7 @@
                 showToast('请先选择一个页面', 'error');
                 return;
             }
-            window.open('/hongdu/mobile/' + currentPage, '_blank');
+            window.open('/mobile/' + currentPage, '_blank');
         }
 
         // 保存页面
@@ -410,7 +410,7 @@
 
             const htmlContent = clonedDoc.documentElement.outerHTML;
 
-            fetch('/hongdu/admin/api/page-builder/save-mobile-page.php', {
+            fetch('api/page-builder/save-mobile-page.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

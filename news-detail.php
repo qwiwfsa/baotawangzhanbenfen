@@ -720,11 +720,11 @@ main#main-content {
             let content = article.content || '<p>暂无内容</p>';
             const basePath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1) + 1);
             const prefix = basePath.replace(/\/$/, '') + '/';
-            // 1) 替换 http://localhost/uploads/ -> /hongdu/uploads/
+            // 1) 替换 http://localhost/uploads/ -> /uploads/
             content = content.replace(/https?:\/\/[^\/]+\/uploads\//g, prefix + 'uploads/');
-            // 2) 替换 ../../../uploads/ -> /hongdu/uploads/
+            // 2) 替换 ../../../uploads/ -> /uploads/
             content = content.replace(/src="(?:\.\.\/)+(uploads\/)/g, 'src="' + prefix.replace(/\/$/, '') + '/$1');
-            // 3) 替换 /uploads/ -> /hongdu/uploads/（确保不重复加）
+            // 3) 替换 /uploads/ -> /uploads/（确保不重复加）
             content = content.replace(new RegExp('src="' + prefix.replace(/\//g, '\/') + 'uploads\/', 'g'), 'src="' + prefix.replace(/\/$/, '') + '/uploads/');
             content = content.replace(/src="\/uploads\//g, 'src="' + prefix.replace(/\/$/, '') + '/uploads/');
             document.getElementById('articleContent').innerHTML = `
@@ -777,7 +777,7 @@ main#main-content {
             }
 
             const fixCoverPath = (path) => {
-                // API已返回完整路径（如 /hongdu/uploads/xxx.jpg），直接使用
+                // API已返回完整路径（如 /uploads/xxx.jpg），直接使用
                 return path || '';
             };
             document.getElementById('relatedArticles').innerHTML = articles.map(a => {
